@@ -11,6 +11,10 @@ app.config(function($routeProvider) {
         .when("/contact", {
             templateUrl : "contact.html",
             controller : "contactCtrl"
+        })
+        .when("/parentalControl", {
+            templateUrl : "parentalControl.html",
+            controller : "parentalCtrl"
         });
 });
 app.controller("devicesCtrl", function ($scope, $http, $interval) {
@@ -19,7 +23,9 @@ app.controller("devicesCtrl", function ($scope, $http, $interval) {
 app.controller("contactCtrl", function ($scope, $http) {
 
 });
+app.controller("parentalCtrl", function ($scope, $http) {
 
+});
 
 
 
