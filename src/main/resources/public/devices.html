@@ -1,3 +1,15 @@
 <div class="jumbotron text-center" >
     <h1>Zarządzaj swoimi urządzeniami! </h1>
+    <div class="container">
+    <h1>Greeting</h1>
+    <div ng-controller="devicesCtrl as devicesCtrl" ng-cloak class="ng-cloak">
+    <div ng-show="authenticated">
+      <p>The ID is {{devicesCtrl.a.id}}</p>
+      <p>The content is {{devicesCtrl.a.content}}</p>
+      </div>
+      <div ng-show="!authenticated">
+      <p>Login to see your greeting</p>
+      </div>
+    </div>
+  </div>
 </div>
