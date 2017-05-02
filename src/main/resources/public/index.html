@@ -3,24 +3,23 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.js"></script>
 <script src="js/script.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"/>
 
 <body ng-app="smartHome" ng-cloak class="ng-cloak">
-
-<nav ng-controller="navigation" class="navbar navbar-default">
+<nav  class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
             <a class="navbar-brand"> Smart life panel</a>
         </div>
 
         <ul class="nav navbar-nav navbar-right">
-            <li class="active"><a href="#/"> Home</a></li>
-            <li><a href="#devices"> Devices</a></li>
+            <li><a href="#/"> Home</a></li>
+            <li ng-show="authenticated"><a href="#devices"> Devices</a></li>
+            <li ng-show="authenticated"><a href="#parentalControl">Parental control</a></li>
             <li><a href="#contact"> Contact</a></li>
-            <li><a href="#parentalControl">parental control</a></li>
             <li ng-show="!authenticated"><a href="#/login">login</a></li>
-			<li ng-show="authenticated"><a href="" ng-click="logout()">logout</a></li>
+			<li ng-show="authenticated"><a href="#/" ng-click="logout()">Logout</a></li>
         </ul>
     </div>
 </nav>

@@ -1,15 +1,33 @@
 <div class="jumbotron text-center" >
-    <h1>Zarządzaj swoimi urządzeniami! </h1>
-    <div class="container">
-    <h1>Greeting</h1>
-    <div ng-controller="devicesCtrl as devicesCtrl" ng-cloak class="ng-cloak">
-    <div ng-show="authenticated">
-      <p>The ID is {{devicesCtrl.a.id}}</p>
-      <p>The content is {{devicesCtrl.a.content}}</p>
-      </div>
-      <div ng-show="!authenticated">
-      <p>Login to see your greeting</p>
-      </div>
+    <h1>Manage your resources! </h1>
+    <div class="alert alert-danger" ng-show="error">
+	There was a problem with accessing your devices. Please try again.
+</div>
+<div ng-controller="devicesCtrl as devicesCtrl" ng-cloak class="ng-cloak">
+    <table class="table">
+							<tr>
+								<th>Name
+								</th>
+								<th>Description
+								</th>
+								<th>Localization
+								</th>
+								<th>Resource type
+								</th>
+							</tr>
+							<tr ng-repeat="resource in resources">
+								<td>{{resource.name}}
+								</td>
+								<td>{{resource.description}}
+								</td>
+								<td>{{resource.localization}}
+								</td>
+								<td>{{resource.resourceType}}
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
     </div>
-  </div>
 </div>

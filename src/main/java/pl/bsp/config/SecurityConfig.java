@@ -27,11 +27,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic().and().authorizeRequests()
-				.antMatchers("/login-post","/user","/index.html", "/home.html", "/login.html", "/devices.html", "/parentalControl.html", "/")
-				.permitAll().anyRequest().authenticated().and()
+				.antMatchers("resources","/login-post","/user","/index.html", "/home.html", "/")
+				.permitAll().anyRequest().authenticated()
+				//.and().formLogin().loginPage("/login.html")
+				//.defaultSuccessUrl("/index.html").permitAll()
+				.and()
 				.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
 				.csrf().csrfTokenRepository(csrfTokenRepository())
-				.and().logout().logoutSuccessUrl("/").deleteCookies("XSRF-TOKEN");
+				.and().logout().logoutSuccessUrl("/login.html").deleteCookies("XSRF-TOKEN");
 
 	}
 	

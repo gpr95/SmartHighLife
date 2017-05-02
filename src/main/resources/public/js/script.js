@@ -2,7 +2,8 @@ var app = angular.module("smartHome", ["ngRoute"]);
 app.config(function($routeProvider, $httpProvider) {
     $routeProvider
         .when("/", {
-            templateUrl : "home.html"
+            templateUrl : "home.html",
+            controller : "homeCtrl"
         })
         .when("/devices", {
             templateUrl : "devices.html",
@@ -18,17 +19,28 @@ app.config(function($routeProvider, $httpProvider) {
         })
         .when("/login",{
         	templateUrl : "login.html",
-        	controller : "navigation"
+        	controller : "loginCtrl"
         });
     
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
-app.controller("devicesCtrl", function ($http) {
+app.controller("homeCtrl", function ($http) {
 	var self = this;
 	$http.get('/resource/').success(function(data) {
 		self.a = data;
 	});
+	
+});
+
+app.controller("devicesCtrl", function ($scope,$http) {
+
+	var self = this;
+	$http.get('/resources/').success(function(data) {
+		$scope.resources = data;
+	}).error(function(data) {
+	      $scope.error = true;
+	    });
 	
 });
 
@@ -40,7 +52,7 @@ app.controller("parentalCtrl", function ($scope, $http) {
 
 });
 
-app.controller('navigation', 
+app.controller('loginCtrl', 
 		function($rootScope, $scope, $http, $location){
 	
 	var authenticate = function(credentials, callback) {
@@ -87,14 +99,15 @@ app.controller('navigation',
 	    })
 	  };
 	  
-	  $scope.logout = function() {
+	  $rootScope.logout = function() {
+		  console.log("Logout action");
 		  $http.post('logout', {}).success(function() {
 		    $rootScope.authenticated = false;
 		    $location.path("/");
 		  }).error(function(data) {
 		    $rootScope.authenticated = false;
 		  });
-	  }
+	  };
 	
 });
 

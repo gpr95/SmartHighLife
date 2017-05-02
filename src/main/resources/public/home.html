@@ -2,4 +2,16 @@
 <div class="jumbotron text-center" >
     <h1>UMIK </h1>
     <h2>Smart home management system</h2>
+    <div class="container">
+    <h1>Greeting</h1>
+    <div ng-controller="homeCtrl as homeCtrl" ng-cloak class="ng-cloak">
+    <div ng-show="authenticated">
+      <p>The ID is {{homeCtrl.a.id}}</p>
+      <p>The content is {{homeCtrl.a.content}}</p>
+      </div>
+      <div ng-show="!authenticated">
+      <p>Login to see your greeting</p>
+      </div>
+    </div>
+  </div>
 </div>
