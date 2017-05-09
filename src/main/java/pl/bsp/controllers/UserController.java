@@ -37,12 +37,12 @@ public class UserController {
 	    return user;
 	  }
 
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public  void logout(HttpServletRequest request, HttpServletResponse response) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) {
-			new SecurityContextLogoutHandler().logout(request, response, auth);
-		}
-		// return (Principal) auth.getPrincipal();
-	}
+//	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+//	public  void logout(HttpServletRequest request, HttpServletResponse response) {
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		if (auth != null) {
+//			new SecurityContextLogoutHandler().logout(request, response, auth);
+//		}
+//		// return (Principal) auth.getPrincipal();
+//	}
 }

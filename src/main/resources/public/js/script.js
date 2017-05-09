@@ -53,7 +53,7 @@ app.controller("parentalCtrl", function ($scope, $http) {
 });
 
 app.controller('loginCtrl', 
-		function($rootScope, $scope, $http, $location){
+		function($rootScope, $scope, $http, $location, $window){
 	
 	var authenticate = function(credentials, callback) {
 		
@@ -103,6 +103,7 @@ app.controller('loginCtrl',
 		  console.log("Logout action");
 		  $http.post('logout', {}).success(function() {
 		    $rootScope.authenticated = false;
+		    $window.location.reload();
 		    $location.path("/");
 		  }).error(function(data) {
 		    $rootScope.authenticated = false;

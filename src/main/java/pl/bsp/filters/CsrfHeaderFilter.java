@@ -1,4 +1,4 @@
-package pl.bsp.config;
+package pl.bsp.filters;
 
 import java.io.IOException;
 

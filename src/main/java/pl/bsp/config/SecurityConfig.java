@@ -13,6 +13,8 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import pl.bsp.filters.CsrfHeaderFilter;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -27,14 +29,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic().and().authorizeRequests()
-				.antMatchers("resources","/login-post","/user","/index.html", "/home.html", "/")
+				.antMatchers("/css/**","/js/**","resources","/login-post","/user","/index.html","/contact.html", "/home.html", "/","/login.html")
 				.permitAll().anyRequest().authenticated()
-				//.and().formLogin().loginPage("/login.html")
+				.and().formLogin().loginPage("/login.html").permitAll()
 				//.defaultSuccessUrl("/index.html").permitAll()
 				.and()
 				.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
 				.csrf().csrfTokenRepository(csrfTokenRepository())
-				.and().logout().logoutSuccessUrl("/login.html").deleteCookies("XSRF-TOKEN");
+				.and().logout().logoutSuccessUrl("/login.html").deleteCookies("XSRF-TOKEN", "JSESSIONID");
 
 	}
 	
