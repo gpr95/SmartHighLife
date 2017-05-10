@@ -20,6 +20,10 @@ app.config(function($routeProvider, $httpProvider) {
         .when("/login",{
         	templateUrl : "login.html",
         	controller : "loginCtrl"
+        })
+        .when("/register",{
+        	templateUrl : "register.html",
+        	controller : "registerCtrl"
         });
     
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
@@ -49,6 +53,10 @@ app.controller("contactCtrl", function ($scope, $http) {
 });
 
 app.controller("parentalCtrl", function ($scope, $http) {
+
+});
+
+app.controller("registerCtrl", function ($scope, $http) {
 
 });
 
