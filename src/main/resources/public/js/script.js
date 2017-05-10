@@ -1,4 +1,4 @@
-var app = angular.module("smartHome", ["ngRoute"]);
+var app = angular.module("smartHome", ["ngRoute","ngTable"]);
 app.config(function($routeProvider, $httpProvider) {
     $routeProvider
         .when("/", {
@@ -33,11 +33,11 @@ app.controller("homeCtrl", function ($http) {
 	
 });
 
-app.controller("devicesCtrl", function ($scope,$http) {
+app.controller("devicesCtrl", function ($scope,$http, NgTableParams) {
 
-	var self = this;
 	$http.get('/resources/').success(function(data) {
-		$scope.resources = data;
+		$scope.data = data;
+		$scope.tableParams = new NgTableParams({}, { dataset: data});
 	}).error(function(data) {
 	      $scope.error = true;
 	    });

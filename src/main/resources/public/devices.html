@@ -1,33 +1,21 @@
 <div class="jumbotron text-center" >
     <h1>Manage your resources! </h1>
+    <br>
     <div class="alert alert-danger" ng-show="error">
 	There was a problem with accessing your devices. Please try again.
 </div>
-<div ng-controller="devicesCtrl as devicesCtrl" ng-cloak class="ng-cloak">
-    <table class="table">
-							<tr>
-								<th>Name
-								</th>
-								<th>Description
-								</th>
-								<th>Localization
-								</th>
-								<th>Resource type
-								</th>
-							</tr>
-							<tr ng-repeat="resource in resources">
-								<td>{{resource.name}}
+ <div ng-controller="devicesCtrl as devicesCtrl" ng-cloak class="ng-cloak">
+    <table ng-table="tableParams" class="table" show-filter="true">
+							<tr ng-repeat="resource in data">
+								<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">{{resource.name}}
 								</td>
-								<td>{{resource.description}}
+								<td title="'Description'" filter="{ description: 'text'}" sortable="'description'">{{resource.description}}
 								</td>
-								<td>{{resource.localization}}
+								<td title="'Localization'" filter="{ localization: 'text'}" sortable="'localization'">{{resource.localization}}
 								</td>
-								<td>{{resource.resourceType}}
+								<td title="'Resource type'" filter="{ resourceType: 'text'}" sortable="'resourceType'">{{resource.resourceType}}
 								</td>
 							</tr>
 						</table>
-					</td>
-				</tr>
-			</table>
-    </div>
+     </div
 </div>
