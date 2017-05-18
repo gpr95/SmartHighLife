@@ -8,14 +8,17 @@
 					<hr />
 				</div>
 			</div>
+			
 			<div class="alert alert-danger" ng-show="error1">There was a
 				problem with registration. Please try again.</div>
 			<div class="main-login main-center">
 			<div class="alert alert-danger" ng-show="error2">Please fill all fields.</div>
 			<div class="main-login main-center">
 			<div class="alert alert-danger" ng-show="error3">Password do not match!</div>
+			<div class="row">
+			 <div class="col-6 col-md-4"></div>
+			 <div class="col-6 col-md-4">
 			<div class="main-login main-center">
-				
 				<form role="form"  ng-submit="register()">
 					<div class="form-group">
 						<label for="name" class="cols-sm-2 control-label">First
@@ -67,7 +70,7 @@
 					</div>
 
 					<div class="form-group">
-						<label for="password" class="cols-sm-2 control-label">Password</label>
+						<label for="password" class="cols-sd-2 control-label">Password</label>
 						<div class="cols-sm-10">
 							<div class="input-group">
 								<span class="input-group-addon"><i
@@ -98,9 +101,12 @@
 							class="btn btn-primary btn-lg btn-block login-button">Register</button>
 					</div>
 					<div class="login-register">
-						<a href="http://localhost:8080/#/login">Login</a>
+						<a href="http://localhost:8080/#/login">Return to login page</a>
 					</div>
 				</form>
+			</div>
+			</div>
+			<div class="col-6 col-md-4"></div>
 			</div>
 		</div>
 	</div>
