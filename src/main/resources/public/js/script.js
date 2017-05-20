@@ -24,12 +24,10 @@ app
 			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 		});
 
-app.controller("homeCtrl", function($http) {
+app.controller("homeCtrl", function($window) {
 	var self = this;
-	$http.get('/resource/').success(function(data) {
-		self.a = data;
-	});
-
+	self.username = $window.localStorage.getItem("username");
+	
 });
 
 app.controller("devicesCtrl", function($scope, $http, NgTableParams) {
@@ -53,56 +51,66 @@ app.controller("parentalCtrl", function($scope, $http) {
 
 });
 
-app.controller("registerCtrl", function($scope, $http) {
+app.controller("registerCtrl", function($scope, $http, $location) {
 	
-	$scope.user = {};
-	$scope.user.first_name = "";
-	$scope.user.last_name = "";
-	$scope.user.email = "";
-	$scope.user.username = "";
-	$scope.user.password = "";
-	$scope.user.confirm_password = "";
-	$scope.user.confirm_password = "";
+//	$scope.user = {};
+//	$scope.user.first_name = "";
+//	$scope.user.last_name = "";
+//	$scope.user.email = "";
+//	$scope.user.username = "";
+//	$scope.user.password = "";
+//	$scope.user.confirm_password = "";
 
 	$scope.register = function() {
-
+		var user = { 
+				first_name:$scope.first_name,
+				last_name:$scope.last_name,
+				email:$scope.email,
+				username:$scope.username,
+				password:$scope.password,
+				confirm_password: $scope.confirm_password
+		}
+		
 		$scope.error1 = false;
 		$scope.error2 = false;
 		$scope.error3 = false;
 		
-		if ($scope.user.first_name == "" || $scope.user.last_name == ""
-				|| $scope.user.email == "" || $scope.user.username == ""
-				|| $scope.user.password == ""
-				|| $scope.user.confirm_password == "") {
+		if (user.first_name == "" || user.last_name == ""
+				|| user.email == "" || user.username == ""
+				|| user.password == ""
+				|| user.confirm_password == "") {
 
 			$scope.error2 = true;
 		}
 		
 
 		if (!($scope.error2)) {
-			if ($scope.user.password != $scope.user.confirm_password) {
+			if (user.password != user.confirm_password) {
 				$scope.error3 = true;
 			}else{
-			$http.post('register', $scope.user, {
+			$http.post('register-post', angular.toJson(user), {
 				headers : {
 					"content-type" : "application/json",
 					'Accept' : 'application/json'
 				}
 			}).success(function() {
-				console.log("Success register, AUTOLOGIN TO_DO");
-
-			}).error(function() {
-				$scope.error1 = true;
+				console.log("Success register");
+				$location.path("/login")
+			}).error(function(response) {
+				if(response.status == "PASSWORD_NOT_MATCH")
+					$scope.error3 = true;
+				else
+					$scope.error1 = true;
 			});
 			}
 		}
-		$scope.user.first_name = "";
-		$scope.user.last_name = "";
-		$scope.user.email = "";
-		$scope.user.username = "";
-		$scope.user.password = "";
-		$scope.user.confirm_password = "";
-		$scope.user.confirm_password = "";
+		$scope.first_name = "";
+		$scope.last_name = "";
+		$scope.email = "";
+		$scope.username = "";
+		$scope.password = "";
+		$scope.confirm_password = "";
+		$scope.confirm_password = "";
 	}
 });
 
@@ -121,14 +129,19 @@ app.controller('loginCtrl', function($rootScope, $scope, $http, $location,
 		}).success(function(data) {
 			if (data.name) {
 				console.log("Success authentication");
+				$window.localStorage.setItem("username", credentials.username);
 				$rootScope.authenticated = true;
 			} else {
 				console.log("Authentication failed");
 				$rootScope.authenticated = false;
+				$scope.credentials.username = "";
+				$scope.credentials.password = "";
 			}
 			callback && callback();
 		}).error(function() {
 			$rootScope.authenticated = false;
+			$scope.credentials.username = "";
+			$scope.credentials.password = "";
 			callback && callback();
 		});
 	}

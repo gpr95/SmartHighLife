@@ -16,24 +16,26 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id", nullable = false)
+	@Column(name = "id_user", nullable = false)
 	private long id;
+	@Column(name = "first_name", nullable = false, length = 60)
+    private String firstName;
+	@Column(name = "last_name", nullable = false, length = 60)
+    private String lastName;
 	@Column(name = "username",nullable = false, length = 30)
     private String username;
 	@Column(name = "password", nullable = false, length = 60)
     private String password;
-	@Column(name = "role", nullable = false)
+	@Column(name = "role", nullable = false, length = 30)
     private String role;
-	@Column(name = "enabled", nullable = false)
-	private int enabled = 1;  //for developing
-	@Column(name = "email", nullable = false)
+	@Column(name = "enabled", nullable = false, length = 1)
+	private int enabled;
+	@Column(name = "email", nullable = false, length = 60)
 	private String email;
-	@Column(name = "authorities", nullable = false)
-	private String authorities = "ROLE_USER"; //for developing
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private Set<Resource> resources = new HashSet<>();
 	
@@ -74,10 +76,24 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getAuthorities() {
-		return authorities;
+	
+	public Set<Resource> getResources() {
+		return resources;
 	}
-	public void setAuthorities(String authorities) {
-		this.authorities = authorities;
+	public void setResources(Set<Resource> resources) {
+		this.resources = resources;
 	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+    	
 }

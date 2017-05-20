@@ -3,14 +3,13 @@
     <h1>UMIK </h1>
     <h2>Smart home management system</h2>
     <div class="container">
-    <h1>Greeting</h1>
     <div ng-controller="homeCtrl as homeCtrl" ng-cloak class="ng-cloak">
     <div ng-show="authenticated">
-      <p>The ID is {{homeCtrl.a.id}}</p>
-      <p>The content is {{homeCtrl.a.content}}</p>
+      <h1>Hello {{homeCtrl.username}} !</h1>
       </div>
       <div ng-show="!authenticated">
-      <p>Login to see your greeting</p>
+      <h1>Hello!</h1>
+      <p><a href="http://localhost:8080/#/login">Login</a> to access to your devices.</p>
       </div>
     </div>
   </div>

@@ -1,5 +1,8 @@
 package pl.bsp.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,16 +11,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "Resources")
+@Table(name = "resources")
 public class Resource {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
+	@Column(name = "id_resource", nullable = false)
 	private long id;
 	@Column(name = "name", nullable = false)
 	String name;
@@ -28,8 +32,10 @@ public class Resource {
 	@Column(name = "resource_type", nullable = false)
 	String resourceType;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "id_user", nullable = false)
 	private User user;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "resource")
+	private Set<Action> actions = new HashSet<>();
 	
 	public long getId() {
 		return id;
@@ -61,4 +67,17 @@ public class Resource {
 	public void setResourceType(String resourceType) {
 		this.resourceType = resourceType;
 	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
+	}
+	public Set<Action> getActions() {
+		return actions;
+	}
+	public void setActions(Set<Action> actions) {
+		this.actions = actions;
+	}
+	
 }
