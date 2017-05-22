@@ -37,10 +37,10 @@ app.controller("devicesCtrl", function($scope, $http, NgTableParams) {
 	$scope.test = function(){
 		console.log("TEST");
 		
-//		$http.get('URL', {}).success(function(data) {
-//			
-//		}).error(function(data) {
-//		});
+		$http.get('localhost:8080/gettest', {}).success(function(data) {
+			
+		}).error(function(data) {
+		});
 	};
 	
 	////////////////////

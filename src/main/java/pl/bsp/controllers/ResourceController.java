@@ -30,4 +30,9 @@ public class ResourceController {
 	    resources.add(res2);
 	    return resources;
 	  }
+	
+	@RequestMapping("/getpplnumber")
+	public int getPeopleNumber() {
+		return 0;
+	}
 }
