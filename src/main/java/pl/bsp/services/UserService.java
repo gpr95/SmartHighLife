@@ -9,4 +9,6 @@ public interface UserService {
 	public pl.bsp.model.User findByUsername(String username);
 	
 	public pl.bsp.model.User findById(long id);
+	
+	public void update(pl.bsp.model.User userToUpdate);
 }

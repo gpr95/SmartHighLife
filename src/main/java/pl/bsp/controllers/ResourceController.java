@@ -1,17 +1,26 @@
 package pl.bsp.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.bsp.entities.Resource;
-
-import java.util.ArrayList;
-import java.util.List;
+import pl.bsp.services.ResourceServiceImpl;
 
 
 @RestController
 public class ResourceController {
 
+	@Autowired
+	ResourceServiceImpl resServ;
 	
 	@RequestMapping("/resources")
 	  public List<Resource> resources() {
@@ -30,9 +39,13 @@ public class ResourceController {
 	    resources.add(res2);
 	    return resources;
 	  }
-	
-	@RequestMapping("/getpplnumber")
-	public int getPeopleNumber() {
-		return 0;
+
+	@RequestMapping(value = "/add-resource", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<Resource> addResource(@RequestBody Resource resource) {
+		if(resServ.addResource(resource))
+			return new ResponseEntity<Resource>(resource, HttpStatus.OK);
+		else
+			return new ResponseEntity<Resource>(resource, HttpStatus.BAD_REQUEST);
 	}
 }

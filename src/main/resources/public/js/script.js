@@ -30,7 +30,7 @@ app.controller("homeCtrl", function($window) {
 	
 });
 
-app.controller("devicesCtrl", function($scope, $http, NgTableParams) {
+app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams) {
 	
 	///////////////
 	
@@ -44,7 +44,7 @@ app.controller("devicesCtrl", function($scope, $http, NgTableParams) {
 	};
 	
 	////////////////////
-	$scope.types = ["Sensor", "Active device"];
+	$scope.types = ["Sensor", "Active object"];
 	
 	$scope.addDevice = function(){
 		$scope.deviceModal = true;
@@ -55,11 +55,32 @@ app.controller("devicesCtrl", function($scope, $http, NgTableParams) {
 	};
 	
 	$scope.submitResource = function(){
+		
+		$scope.error1 = false;
+		$scope.error2 = false;
+		
 		var resource = {
 				name:$scope.name,
 				resourceType:$scope.resourceType,
 				localization:$scope.localization,
-				description:$scope.description
+				description:$scope.description,
+				username:$window.localStorage.getItem("username")
+		}
+		
+		if(resource.name == "" || resource.resourceType == "" || resource.localization == "" || resource.description == ""){
+			$scope.error1 = true;
+		}else{
+			$http.post('add-resource', angular.toJson(resource), {
+				headers : {
+					"content-type" : "application/json",
+					'Accept' : 'application/json'
+				}
+			}).success(function() {
+				console.log("Resource added");
+				$location.path("/login")
+			}).error(function(response) {
+				$scope.error2 = true;
+			});
 		}
 	}
 	
