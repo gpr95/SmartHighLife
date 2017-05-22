@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 
 @Entity
 @Table(name = "resources")
@@ -31,6 +33,7 @@ public class Resource {
 	String localization;
 	@Column(name = "resource_type", nullable = false)
 	String resourceType;
+	@JsonManagedReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_user", nullable = false)
 	private User user;
