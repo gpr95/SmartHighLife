@@ -100,7 +100,10 @@ app.controller("contactCtrl", function($scope, $http) {
 });
 
 app.controller("parentalCtrl", function($scope, $http) {
-
+	$http.get("http://localhost:8080/cal/")
+		.then(function (response) {
+			$scope.name = response.data.name;
+		});
 });
 
 app.controller("registerCtrl", function($scope, $http, $location) {

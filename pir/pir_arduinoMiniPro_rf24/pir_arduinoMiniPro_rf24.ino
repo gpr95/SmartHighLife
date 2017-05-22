@@ -1,3 +1,5 @@
+
+
 #include <RF24.h>
 #include <RF24Network.h>
 #include <SPI.h>
@@ -17,6 +19,8 @@ struct payloadRF24Msg
 {
   char value;
   char id;
+  //n - notyfication, r - reply, g - get
+  char type;
 };
 
 
@@ -39,6 +43,7 @@ int outPirSensorOldValue = 0;
     2 - wychodzi
 */
 int state = 0;
+int humanCounter =0;
 
 /** Bool for discriminate whether high value was sended */
 bool highValueWasSended = false;
@@ -62,6 +67,19 @@ void loop()
 {
   /** Update network state every loop */
   network.update();
+
+  if(network.available()) 
+  {
+    RF24NetworkHeader header;
+    payloadRF24Msg message;
+    network.read(header,&message,sizeof(message));
+
+    /** If someone sended 1 turn the light on and write broadcast `x`*/
+    if(message.id == id && message.type == 'g') 
+    {
+      sendhumanCounterThroughRF24();
+    }
+  }
 
   /** Read PIR value every loop */
   inPirSensorValue = digitalRead(inPirDigitalPIN);
@@ -114,14 +132,14 @@ void sendValueThroughRF24(unsigned int val)
     Serial.println("wychodzi");
   if (val == 1) {
     Serial.println("wszedl");
-    network.begin(90, pirNodeId);
+    humanCounter++;
   }
   if (val == 0) {
     Serial.println("wyszedl");
-    network.begin(90, pirNodeId + 1);
+    humanCounter--;
   }
   RF24NetworkHeader header(serverNodeId);
-  payloadRF24Msg payload = {val + 48, id};
+  payloadRF24Msg payload = {val + 48, id, 'n'};
   bool ok = network.write(header, &payload, sizeof(payload));
   if (ok)
   {
@@ -131,6 +149,23 @@ void sendValueThroughRF24(unsigned int val)
   else
   {
     Serial.println(" FAILED.");
+  }
+}
+
+void sendhumanCounterThroughRF24()
+{
+  Serial.print(" human counter: ");
+  Serial.print(humanCounter);
+  RF24NetworkHeader header(serverNodeId);
+  payloadRF24Msg payload = {humanCounter, id, 'r'};
+  bool ok = network.write(header, &payload, sizeof(payload));
+  if (ok)
+  {
+    Serial.println(" REPLY SENDED.");
+  }
+  else
+  {
+    Serial.println(" REPLY FAILED.");
   }
 }
 
