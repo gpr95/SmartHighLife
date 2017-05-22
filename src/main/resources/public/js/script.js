@@ -31,7 +31,38 @@ app.controller("homeCtrl", function($window) {
 });
 
 app.controller("devicesCtrl", function($scope, $http, NgTableParams) {
-
+	
+	///////////////
+	
+	$scope.test = function(){
+		console.log("TEST");
+		
+//		$http.get('URL', {}).success(function(data) {
+//			
+//		}).error(function(data) {
+//		});
+	};
+	
+	////////////////////
+	$scope.types = ["Sensor", "Active device"];
+	
+	$scope.addDevice = function(){
+		$scope.deviceModal = true;
+	};
+	
+	$scope.cancel = function(){
+		$scope.deviceModal = true;
+	};
+	
+	$scope.submitResource = function(){
+		var resource = {
+				name:$scope.name,
+				resourceType:$scope.resourceType,
+				localization:$scope.localization,
+				description:$scope.description
+		}
+	}
+	
 	$http.get('/resources/').success(function(data) {
 		$scope.data = data;
 		$scope.tableParams = new NgTableParams({}, {
@@ -158,12 +189,13 @@ app.controller('loginCtrl', function($rootScope, $scope, $http, $location,
 					$location.path("/");
 					$scope.error = false;
 				} else {
-					$location.path("/login");
-					$scope.error = true;
+					$scope.credentials.username = "";
+					$scope.credentials.password = "";
+					$rootScope.authenticated = false;
+					$scope.error2 = true;
 				}
 			});
 		}).error(function(data) {
-			$location.path("/login");
 			$scope.error = true;
 			$rootScope.authenticated = false;
 		})
