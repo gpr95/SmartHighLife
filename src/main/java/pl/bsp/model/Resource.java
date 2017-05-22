@@ -34,8 +34,10 @@ public class Resource {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_user", nullable = false)
 	private User user;
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "resource")
-	private Set<Action> actions = new HashSet<>();
+	@Column(name = "action", nullable = false)
+	String action;
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "resource")
+//	private Set<Action> actions = new HashSet<>();
 	
 	public long getId() {
 		return id;
@@ -73,11 +75,18 @@ public class Resource {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public Set<Action> getActions() {
-		return actions;
+	public String getAction() {
+		return action;
 	}
-	public void setActions(Set<Action> actions) {
-		this.actions = actions;
+	public void setAction(String action) {
+		this.action = action;
 	}
+	
+//	public Set<Action> getActions() {
+//		return actions;
+//	}
+//	public void setActions(Set<Action> actions) {
+//		this.actions = actions;
+//	}
 	
 }

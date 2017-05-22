@@ -30,8 +30,60 @@ app.controller("homeCtrl", function($window) {
 	
 });
 
-app.controller("devicesCtrl", function($scope, $http, NgTableParams) {
-
+app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams) {
+	
+	///////////////
+	
+	$scope.test = function(){
+		console.log("TEST");
+		
+//		$http.get('URL', {}).success(function(data) {
+//			
+//		}).error(function(data) {
+//		});
+	};
+	
+	////////////////////
+	$scope.types = ["Sensor", "Active object"];
+	
+	$scope.addDevice = function(){
+		$scope.deviceModal = true;
+	};
+	
+	$scope.cancel = function(){
+		$scope.deviceModal = true;
+	};
+	
+	$scope.submitResource = function(){
+		
+		$scope.error1 = false;
+		$scope.error2 = false;
+		
+		var resource = {
+				name:$scope.name,
+				resourceType:$scope.resourceType,
+				localization:$scope.localization,
+				description:$scope.description,
+				username:$window.localStorage.getItem("username")
+		}
+		
+		if(resource.name == "" || resource.resourceType == "" || resource.localization == "" || resource.description == ""){
+			$scope.error1 = true;
+		}else{
+			$http.post('add-resource', angular.toJson(resource), {
+				headers : {
+					"content-type" : "application/json",
+					'Accept' : 'application/json'
+				}
+			}).success(function() {
+				console.log("Resource added");
+				$location.path("/login")
+			}).error(function(response) {
+				$scope.error2 = true;
+			});
+		}
+	}
+	
 	$http.get('/resources/').success(function(data) {
 		$scope.data = data;
 		$scope.tableParams = new NgTableParams({}, {
@@ -158,12 +210,13 @@ app.controller('loginCtrl', function($rootScope, $scope, $http, $location,
 					$location.path("/");
 					$scope.error = false;
 				} else {
-					$location.path("/login");
-					$scope.error = true;
+					$scope.credentials.username = "";
+					$scope.credentials.password = "";
+					$rootScope.authenticated = false;
+					$scope.error2 = true;
 				}
 			});
 		}).error(function(data) {
-			$location.path("/login");
 			$scope.error = true;
 			$rootScope.authenticated = false;
 		})

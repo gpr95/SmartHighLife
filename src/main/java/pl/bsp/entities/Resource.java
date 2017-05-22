@@ -9,6 +9,7 @@ public class Resource
     String description;
     String localization;
     String resourceType;
+    String username;
 
     public String getName() {
         return name;
@@ -41,4 +42,13 @@ public class Resource
     public void setResourceType(String resourceType) {
         this.resourceType = resourceType;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+    
 }

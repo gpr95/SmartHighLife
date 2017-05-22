@@ -36,14 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic().and().authorizeRequests()
-				.antMatchers("/css/**","/js/**","resources","/login-post","/user","/index.html","/contact.html",
+				.antMatchers("/css/**","/js/**","/login-post","/user","/index.html","/contact.html",
 						"/register.html","/home.html", "/","/login.html","/register", "/register-post")
 				.permitAll().anyRequest().authenticated()
 				.and().formLogin().loginPage("/login.html").permitAll()
 				.and()
 				.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
 				.csrf().csrfTokenRepository(csrfTokenRepository())
-				.and().logout().logoutSuccessUrl("/login.html").deleteCookies("XSRF-TOKEN", "JSESSIONID");
+				.and().logout().logoutSuccessUrl("/login.html").deleteCookies("XSRF-TOKEN", "JSESSIONID").invalidateHttpSession(true);
 
 	}
 	
