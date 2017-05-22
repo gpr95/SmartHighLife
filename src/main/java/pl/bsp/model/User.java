@@ -1,10 +1,13 @@
 package pl.bsp.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 @Entity
@@ -36,8 +41,12 @@ public class User {
 	private int enabled;
 	@Column(name = "email", nullable = false, length = 60)
 	private String email;
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-	private Set<Resource> resources = new HashSet<>();
+	@JsonBackReference
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Resource> resources = new ArrayList<>();
+	@JsonBackReference
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ParentalControlPolicy> policies = new ArrayList<>();
 	
 	
 	public long getId() {
@@ -77,10 +86,10 @@ public class User {
 		this.email = email;
 	}
 	
-	public Set<Resource> getResources() {
+	public List<Resource> getResources() {
 		return resources;
 	}
-	public void setResources(Set<Resource> resources) {
+	public void setResources(List<Resource> resources) {
 		this.resources = resources;
 	}
 	public String getFirstName() {
@@ -94,6 +103,12 @@ public class User {
 	}
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	public List<ParentalControlPolicy> getPolicies() {
+		return policies;
+	}
+	public void setPolicies(List<ParentalControlPolicy> policies) {
+		this.policies = policies;
 	}
     	
 }

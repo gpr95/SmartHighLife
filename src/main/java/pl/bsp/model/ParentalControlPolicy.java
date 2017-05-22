@@ -1,12 +1,15 @@
 package pl.bsp.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
-@Table(name = "parentalControlPolicy")
+@Table(name ="parentalControlPolicy")
 public class ParentalControlPolicy {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,7 @@ public class ParentalControlPolicy {
 	String startTime;
 	@Column(name = "end_time", nullable = false)
 	String endTime;
+	@JsonManagedReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_user", nullable = false)
 	private User user;

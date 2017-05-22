@@ -6,8 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ParentalControlPolicyRepository extends JpaRepository<ParentalControlPolicy, Long>{
-
-	public User findByUsername(String username);
-
-	public User findById(long id);
+	
+	public ParentalControlPolicy findById(long id);
 }

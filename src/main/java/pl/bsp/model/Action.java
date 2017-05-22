@@ -10,8 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "actions")
+//@Entity
+//@Table(name = "actions")
 public class Action {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
