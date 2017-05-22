@@ -34,6 +34,8 @@ public class ResourceController {
 	  public  ResponseEntity<List<pl.bsp.model.Resource>> resources(@PathVariable("username") String username) {
 		User resourcesOwner = userService.findByUsername(username);
 		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
+		List<Resource> resourcesToSend = new ArrayList<Resource>();
+		
 		if(resources == null || resources.isEmpty())
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		else
