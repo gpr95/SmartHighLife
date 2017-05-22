@@ -7,21 +7,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Repository
 @EnableTransactionManagement
-public class UserDAO {
-	
+public class ResourceDAO {
+
 	@PersistenceContext
     EntityManager entityManager;
 
 	@Transactional
-	public void addUser(User user){
-		entityManager.persist(user);
-	}
-	
-	@Transactional
-	public void updateUser(User user){
-		entityManager.merge(user);
+	public void addResource(Resource resource){
+		entityManager.persist(resource);
 	}
 }
