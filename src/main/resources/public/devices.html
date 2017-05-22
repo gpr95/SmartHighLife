@@ -25,7 +25,9 @@
 								</td>
 								<td title="'Resource type'" filter="{ resourceType: 'text'}" sortable="'resourceType'">{{resource.resourceType}}
 								</td>
-								<td title="'Action'" filter="{ action: 'text'}" sortable="'action'">{{addAction(resource.action, resource.localization)}}
+								<td title="'Action'" filter="{ action: 'text'}" sortable="'action'">
+								<button class="btn btn-primary btn-xs " ng-click="getValue(resource.localization)" >GET</button>
+								<button class="btn btn-primary btn-xs " ng-click="postValue(resource.localization)" ng-show ="checkIfPost(resource.action)">POST</button>
 								</td>
 							</tr>
 						</table>

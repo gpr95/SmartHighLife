@@ -102,14 +102,11 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		console.log("Sending post value for" + localization);
 		}
 	
-	$scope.addAction = function(action, localization){
-		if(action === "GET/POST"){
-			return "<button class=\"btn btn-primary btn-xs \" ng-click=\"getValue("+localization+")\">GET</button>" + "<button class=\"btn btn-primary btn-xs \" ng-click=\"putValue("+localization+")\">POST</button>";
-		}else if(action === "GET"){
-			return "<button class=\"btn btn-primary btn-xs \" ng-click=\"getValue("+localization+")\">GET</button>";
-		}else{
-			"No action :(";
-		}
+	$scope.checkIfPost = function(action){
+		if(action === "GET/POST")
+			return true;
+		else
+			return false;
 	}
 
 });
