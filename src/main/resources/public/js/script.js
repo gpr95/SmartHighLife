@@ -84,21 +84,26 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		$scope.error = true;
 	});
 	
-	$scope.getValue = function(localization, serial_id){
+	$scope.getValue = function( serial_id){
 		console.log("Sending get value for" + localization);
-		$http.get('/get-value/' + serial_id).success(function(data) {
-			
-		}).error(function(data) {
+		$http.get('/get-value/'+$window.localStorage.getItem("username")+'/'+ serial_id).success(function(response) {
+			$scope.valueFromResource = response.status;
+		}).error(function(response) {
+			$scope.valueFromResource = "Error getting data.";
 		});
 		
-		$scope.valueFromResource = "8";
+		
 	}
 	
-	$scope.postValue = function(localization, serial_id){
-	
+	$scope.postValue = function(serial_id){
+		
+		var valueToSend = {
+				val:"ON/OFF"
+		}
+		
 		console.log("Sending post value for" + localization);
 		
-		$http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id, {
+        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id, {
 			headers : {
 				"content-type" : "application/json",
 				'Accept' : 'application/json'
@@ -136,7 +141,6 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 	$scope.error2 = false;
 	
 	var policy = {
-			name:$scope.name,
 			description:$scope.description,
 			resourceName:$scope.resourceName,
 			action:$scope.action,
@@ -146,7 +150,7 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 			username:$window.localStorage.getItem("username")
 	}
 	
-	if(policy.name == "" || policy.description == "" || policy.resourceName == "" || policy.action == "", policy.startTime == "", policy.endTime =="" || policy.repeatPatern == "" || policy.username == ""){
+	if(policy.description == "" || policy.resourceName == "" || policy.action == "", policy.startTime == "", policy.endTime =="" || policy.repeatPatern == "" || policy.username == ""){
 		$scope.error1 = true;
 	}else{
 		$http.post('/parentalPolicy', angular.toJson(policy), {
@@ -177,15 +181,7 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 });
 
 app.controller("registerCtrl", function($scope, $http, $location) {
-	
-//	$scope.user = {};
-//	$scope.user.first_name = "";
-//	$scope.user.last_name = "";
-//	$scope.user.email = "";
-//	$scope.user.username = "";
-//	$scope.user.password = "";
-//	$scope.user.confirm_password = "";
-	
+
 	
 	$scope.getIp = function(){
 		
