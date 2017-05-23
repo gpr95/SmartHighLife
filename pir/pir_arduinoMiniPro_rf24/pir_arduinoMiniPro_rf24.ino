@@ -81,6 +81,7 @@ void loop()
     }
     if(message.type == 'x') {
       id = message.id;
+      Serial.print("ID assigned! :");
     }
   }
 
@@ -126,6 +127,10 @@ void loop()
 
 void sendValueThroughRF24(unsigned int val)
 {
+  if (id == '0') {
+    Serial.print("NO ID! :");
+    return;
+  }
   if (val == sendedValue)
     return;
   Serial.print("SENDING :");
