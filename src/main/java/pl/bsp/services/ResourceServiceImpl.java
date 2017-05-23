@@ -43,6 +43,9 @@ public class ResourceServiceImpl implements ResourceService{
 		}
 		List<pl.bsp.model.Resource> resources = owner.getResources();
 		resources.add(resourceToDb);
+		ArduinoService ardServ = new ArduinoServiceImpl();
+		ardServ.addNewResource(owner.getIpAddress(), resourceToDb.getSerialId());
+		
 		resourceRepo.addResource(resourceToDb);
 		userService.update(owner);
 		return true;

@@ -1,6 +1,5 @@
 package pl.bsp.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,23 +67,30 @@ public class ResourceController {
 		User resourcesOwner = userService.findByUsername(userName);
 		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
 		String arduinoIp = resourcesOwner.getIpAddress();
-		ardServ.turnOnTheLight(arduinoIp,Integer.parseInt(resourceId));
-
-		return new ResponseEntity<>(resources,HttpStatus.OK);
+		int serialId = Integer.parseInt(resourceId);
+		if (serialId < 100) {
+			if (val.equals("ON"))
+				ardServ.turnOnTheLight(arduinoIp, serialId);
+			else if (val.equals("OFF"))
+				ardServ.turnOffTheLight(arduinoIp, serialId);
+		} else {
+			
+		}
+		return new ResponseEntity<>(resources, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/get-value/{username}/{serial_id}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<String> getValueFrnResource(@PathVariable("username") String userName,
 			@PathVariable("serial_id") String resourceId) {
 		User resourcesOwner = userService.findByUsername(userName);
 		String arduinoIp = resourcesOwner.getIpAddress();
-		String result = ardServ.getResourceValue(arduinoIp,Integer.parseInt(resourceId));
+		String result = ardServ.getResourceValue(arduinoIp, Integer.parseInt(resourceId));
 		System.out.println(result);
 		if (result != null && !result.isEmpty())
-			return new ResponseEntity<>("{\"status\": \"" + result + "\"}",HttpStatus.OK);
+			return new ResponseEntity<>("{\"status\": \"" + result + "\"}", HttpStatus.OK);
 		else
-			return new ResponseEntity<>("{\"status\": \"" + result + "\"}",HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("{\"status\": \"" + result + "\"}", HttpStatus.NOT_FOUND);
 	}
 
 }

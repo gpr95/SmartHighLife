@@ -11,13 +11,14 @@ RF24 radio(6, 7);
 RF24Network network(radio);
 
 /** RF24 IDs */
+const uint16_t nodeId = 01;
 const uint16_t serverNodeId = 00;
 
 /** RF24 receive scruct */
 struct payloadRF24Msg
 {
   char value;
-  int id;
+  char id;
   //n - notyfication, r - reply, g - get
   char type;
 };
@@ -101,13 +102,9 @@ void loop()
         break;
       case 'N':
         turnOnLight();
-        turnOffLight();
-        turnOnLight();
         writeThroughUDP('D');
         break;
       case 'n':
-        turnOnLight();
-        turnOffLight();
         turnOnLight();
         writeThroughUDP('D');
         break;
@@ -161,35 +158,19 @@ void initializeRemoteIp() {
 }
 
 void addResource(char serverMsg[], int serverMsgSize) {
-  char resourceId[serverMsgSize];
-  for (int i = 1; i < serverMsgSize; i++)
-  {
-    resourceId[i - 1] = serverMsg[i];
-  }
-  resourceId[serverMsgSize - 1] = '\0';
-
   Serial.println(" ");
-  int id ;
-  id = atoi(resourceId);
+  char id =  serverMsg[1];
   Serial.print(id);
   writeThroughUDP('D');
   writeThroughRF24(48,'x', id);
 }
 
 void getResource(char serverMsg[], int serverMsgSize) {
-  char resourceId[serverMsgSize];
-  for (int i = 1; i < serverMsgSize; i++)
-  {
-    resourceId[i - 1] = serverMsg[i];
-  }
-  resourceId[serverMsgSize - 1] = '\0';
-
   Serial.println(" ");
-  int id ;
-  id = atoi(resourceId);
+  char id =  serverMsg[1];
   Serial.print(id);
 
-  if (id > 40000) {
+  if (id > 100) {
     writeThroughRF24(48,'g', id);
     network.update();
 
@@ -248,9 +229,9 @@ void writeThroughUDP(unsigned char msg)
   Udp.endPacket();
 }
 
-void writeThroughRF24(int value, char type, int id)
+void writeThroughRF24(int value, char type, char id)
 {
-  RF24NetworkHeader header(01);
+  RF24NetworkHeader header(nodeId);
   payloadRF24Msg payload = {48, id, type};
   bool ok = network.write(header, &payload, sizeof(payload));
   if (ok)
