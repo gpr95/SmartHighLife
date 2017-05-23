@@ -79,6 +79,9 @@ void loop()
     {
       sendhumanCounterThroughRF24();
     }
+    if(message.type == 'x') {
+      id = message.id;
+    }
   }
 
   /** Read PIR value every loop */
@@ -157,7 +160,7 @@ void sendhumanCounterThroughRF24()
   Serial.print(" human counter: ");
   Serial.print(humanCounter);
   RF24NetworkHeader header(serverNodeId);
-  payloadRF24Msg payload = {humanCounter, id, 'r'};
+  payloadRF24Msg payload = {humanCounter + 48, id, 'r'};
   bool ok = network.write(header, &payload, sizeof(payload));
   if (ok)
   {

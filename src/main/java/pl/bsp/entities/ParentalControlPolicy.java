@@ -12,6 +12,15 @@ public class ParentalControlPolicy
     String username;
     String startTime;
     String endTime;
+    int repeatPatern;
+
+    public int getRepeatPatern() {
+        return repeatPatern;
+    }
+
+    public void setRepeatPatern(int repeatPatern) {
+        this.repeatPatern = repeatPatern;
+    }
 
     public String getName() {
         return name;

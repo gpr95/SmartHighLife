@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import pl.bsp.arduino.NumberOfPeopleInRoomCounterThread;
 
 @SpringBootApplication
-@EnableOAuth2Sso
+//@EnableOAuth2Sso
 public class SmartHighLifeApplication extends WebMvcConfigurerAdapter {
 
 	public static void main(String[] args) throws Exception {

@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService{
 		userToAdd.setRole("ROLE_USER");
 		userToAdd.setEnabled(1);
 		userToAdd.setEmail(user.getEmail());
+		userToAdd.setIpAddress(user.getIp_address());
 		userDAO.addUser(userToAdd);
 		System.out.println("USER ADDED");
 	}
