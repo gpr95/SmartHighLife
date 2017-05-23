@@ -177,11 +177,11 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 	}else{
 		$http.post('/parentalPolicy', angular.toJson(policy), {
 			headers : {
-				"content-type" : "application/json",
-				'Accept' : 'application/json'
+				"content-type" : "application/json"
+
 			}
 		}).success(function(response) {
-			console.log("Policy added");
+			console.log(response.status);
 			$("[data-dismiss=modal]").trigger({ type: "click" });
 		}).error(function(response) {
 			$scope.error2 = true;

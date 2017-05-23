@@ -66,7 +66,7 @@ public class ParentalControlController {
         policyDb.setRepeatPatern(policy.getRepeatPatern());
         policyDb.setStartTime(policy.getStartTime());
         if(policyService.add(policyDb))
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            return new ResponseEntity<>("{\"status\": \"success\"}", HttpStatus.OK);
         else
             return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
     }
