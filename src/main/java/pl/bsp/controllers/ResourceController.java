@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.bsp.entities.Resource;
+import pl.bsp.services.ArduinoServiceImpl;
 import pl.bsp.services.ResourceServiceImpl;
 
 
@@ -21,6 +22,8 @@ public class ResourceController {
 
 	@Autowired
 	ResourceServiceImpl resServ;
+	
+	ArduinoServiceImpl ardServ;
 	
 	@RequestMapping("/resources")
 	  public List<Resource> resources() {
@@ -44,8 +47,19 @@ public class ResourceController {
 			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Resource> addResource(@RequestBody Resource resource) {
 		if(resServ.addResource(resource))
-			return new ResponseEntity<Resource>(resource, HttpStatus.OK);
+			return new ResponseEntity<>(resource, HttpStatus.OK);
 		else
-			return new ResponseEntity<Resource>(resource, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(resource, HttpStatus.BAD_REQUEST);
 	}
+	
+	@RequestMapping(value = "/get-arduino-uno-address", method = RequestMethod.GET)
+	public ResponseEntity<String> getArduinoAddress() {
+		String arduinoAddress = ardServ.findArduinoInNetwork();
+		if(arduinoAddress != null)
+			return new ResponseEntity<>(arduinoAddress, HttpStatus.OK);
+		else
+			return new ResponseEntity<>(arduinoAddress, HttpStatus.NOT_FOUND);
+	}
+	
+	
 }
