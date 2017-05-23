@@ -6,11 +6,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.bsp.entities.Resource;
+import pl.bsp.enums.RepeatPatern;
 import pl.bsp.model.ParentalControlPolicy;
 import pl.bsp.model.User;
 import pl.bsp.services.ParentalControlPolicyService;
 import pl.bsp.services.UserServiceImpl;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,12 +38,36 @@ public class ParentalControlController {
             return new ResponseEntity<>(policies, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/parentalPolicy",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
-            MediaType.APPLICATION_XML_VALUE })
-    public ResponseEntity<ParentalControlPolicy> addResource(@RequestBody ParentalControlPolicy policy) {
+    @RequestMapping(value="/addParentalPolicies/", method = RequestMethod.GET, produces =
+            { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } )
+    public ResponseEntity<ParentalControlPolicy> addResources() {
+        ParentalControlPolicy policy = new ParentalControlPolicy();
+        policy.setAction("turn on");
+        policy.setDescription("dsadsa");
+        policy.setEndTime("2017-05-23 17:00:00");
+        policy.setStartTime("2017-05-23 17:00:00");
+        policy.setResourceName("guziczek");
+        policy.setUser(userService.findByUsername("a"));
         if(policyService.add(policy))
             return new ResponseEntity<>(policy, HttpStatus.OK);
         else
             return new ResponseEntity<>(policy, HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value="/parentalPolicy",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_XML_VALUE })
+    public ResponseEntity<String> addResource(@RequestBody pl.bsp.entities.ParentalControlPolicy policy) {
+        ParentalControlPolicy policyDb = new ParentalControlPolicy();
+        policyDb.setResourceName(policy.getResourceName());
+        policyDb.setUser(userService.findByUsername(policy.getUsername()));
+        policyDb.setDescription(policy.getDescription());
+        policyDb.setAction(policy.getAction());
+        policyDb.setEndTime(policy.getEndTime());
+        policyDb.setRepeatPatern(policy.getRepeatPatern());
+        policyDb.setStartTime(policy.getStartTime());
+        if(policyService.add(policyDb))
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        else
+            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
     }
 }
