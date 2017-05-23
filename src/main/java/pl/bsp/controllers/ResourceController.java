@@ -61,10 +61,10 @@ public class ResourceController {
 			return new ResponseEntity<>("{\"status\": \"" + arduinoAddress + "\"}", HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/post-value/{username}/{serial_id}", method = RequestMethod.GET, produces = {
+	@RequestMapping(value = "/post-value/{username}/{serial_id}/{val}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<List<pl.bsp.model.Resource>> postValueToResource(@PathVariable("username") String userName,
-			@PathVariable("serial_id") String resourceId) {
+			@PathVariable("serial_id") String resourceId, @PathVariable("val") String val) {
 		User resourcesOwner = userService.findByUsername(userName);
 		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
 		String arduinoIp = resourcesOwner.getIpAddress();
@@ -78,9 +78,9 @@ public class ResourceController {
 	public ResponseEntity<String> getValueFrnResource(@PathVariable("username") String userName,
 			@PathVariable("serial_id") String resourceId) {
 		User resourcesOwner = userService.findByUsername(userName);
-		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
 		String arduinoIp = resourcesOwner.getIpAddress();
 		String result = ardServ.getResourceValue(arduinoIp,Integer.parseInt(resourceId));
+		System.out.println(result);
 		if (result != null && !result.isEmpty())
 			return new ResponseEntity<>("{\"status\": \"" + result + "\"}",HttpStatus.OK);
 		else

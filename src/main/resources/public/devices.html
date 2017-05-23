@@ -32,10 +32,10 @@
 							sortable="'description'">{{resource.description}}</td>
 						<td title="'Action'" >
 							<button class="btn btn-primary btn-xs "
-								ng-click="getValue(resource.localization, resource.serialId)" data-toggle="modal"
+								ng-click="getValue(resource.serialId)" data-toggle="modal"
 								data-target="#rowModal">VALUE</button>
 							<button class="btn btn-primary btn-xs "
-								ng-click="postValue(resource.localization, resource.serialId)"
+								ng-click="postValue(resource.serialId)"
 								ng-show="checkIfPost(resource.action)">TURN ON/OFF</button>
 						</td>
 					</tr>

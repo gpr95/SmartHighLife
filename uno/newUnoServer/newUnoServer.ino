@@ -189,7 +189,7 @@ void getResource(char serverMsg[], int serverMsgSize) {
   id = atoi(resourceId);
   Serial.print(id);
 
-  if (id < 40000) {
+  if (id > 40000) {
     writeThroughRF24(48,'g', id);
     network.update();
 

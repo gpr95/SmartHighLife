@@ -101,26 +101,24 @@ public class ArduinoServiceImpl implements ArduinoService {
 
 	@Override
 	public void turnOnTheLight(String arduinoIp, int resourceId) {
-		writeMsgToArduino("N"+resourceId, arduinoIp);
+		writeMsgToArduino("N" + resourceId, arduinoIp);
 	}
 
 	@Override
 	public void turnOffTheLight(String arduinoIp, int resourceId) {
-		writeMsgToArduino("F"+resourceId, arduinoIp);
+		writeMsgToArduino("F" + resourceId, arduinoIp);
 	}
 
 	@Override
 	public String getResourceValue(String arduinoIp, int resourceId) {
-		String returnedValue = writeMsgToArduino("G"+resourceId, arduinoIp);
-
-		switch (returnedValue) {
-		case "N":
+		String returnedValue = writeSingleMsgToArduino("G" + resourceId, arduinoIp);
+		System.out.println(returnedValue);
+		if(returnedValue.startsWith("N"))
 			return "ON";
-		case "F":
+		if(returnedValue.startsWith("F"))
 			return "OFF";
-		default:
-			return returnedValue;
-		}
+		return returnedValue;
+		
 	}
 
 	private String writeMsgToArduino(String msg, String arduinoIp) {
@@ -153,7 +151,38 @@ public class ArduinoServiceImpl implements ArduinoService {
 				e.printStackTrace();
 			}
 		} while (retransmit);
-		
+
+		serverSocket.close();
+
+		return received;
+	}
+
+	private String writeSingleMsgToArduino(String msg, String arduinoIp) {
+		String received = null;
+		byte[] sendData = msg.getBytes();
+		byte[] receiveData = new byte[1024];
+		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+		DatagramSocket serverSocket = null;
+		try {
+			serverSocket = new DatagramSocket(8888);
+			serverSocket.setSoTimeout(1000);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		try {
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(arduinoIp),
+					8888);
+			serverSocket.send(sendPacket);
+			serverSocket.receive(receivePacket);
+			received = new String(receivePacket.getData());
+			System.out.println(received);
+		} catch (SocketTimeoutException e) {
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		serverSocket.close();
 
 		return received;
