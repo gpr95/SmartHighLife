@@ -6,8 +6,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+
+import pl.bsp.model.User;
 
 public class ArduinoServiceImpl implements ArduinoService {
 
@@ -94,6 +97,49 @@ public class ArduinoServiceImpl implements ArduinoService {
 		if (arduinoIp != null)
 			return arduinoIp.getHostAddress();
 		return null;
+	}
+
+	@Override
+	public void turnOnTheLight(String arduinoIp, int resourceId) {
+		writeMsgToArduino("NNN",arduinoIp);
+	}
+
+	@Override
+	public void turnOffTheLight(String arduinoIp, int resourceId) {
+		writeMsgToArduino("FFF",arduinoIp);
+	}
+	
+	private void writeMsgToArduino(String msg,String arduinoIp) {
+		byte[] sendData = msg.getBytes();
+		byte[] receiveData = new byte[1024];
+		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+		DatagramSocket serverSocket = null;
+		try {
+			serverSocket = new DatagramSocket(8888);
+			serverSocket.setSoTimeout(1000);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		boolean retransmit = false;
+		do {
+			try {
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
+						InetAddress.getByName(arduinoIp), 8888);
+				serverSocket.send(sendPacket);
+				serverSocket.receive(receivePacket);
+				String received = new String(receivePacket.getData());
+				System.out.println(received);
+				retransmit = false;
+			} catch (SocketTimeoutException e) {
+				retransmit = true;
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} while (retransmit);
+		serverSocket.close();
+
 	}
 
 }

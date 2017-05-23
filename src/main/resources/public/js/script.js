@@ -106,14 +106,10 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 	}
 	
 	$scope.postValue = function(localization, serial_id){
-		
-		var valueToSend = {
-				val:"ON/OFF"
-		}
-		
+	
 		console.log("Sending post value for" + localization);
 		
-		$http.post('/post-value/' + serial_id, angular.toJson(valueToSend), {
+		$http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id, {
 			headers : {
 				"content-type" : "application/json",
 				'Accept' : 'application/json'

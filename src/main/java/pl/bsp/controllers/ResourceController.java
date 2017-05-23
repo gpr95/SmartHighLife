@@ -28,10 +28,7 @@ public class ResourceController {
 	@Autowired
 	UserServiceImpl userService;
 
-	
 	ArduinoService ardServ = new ArduinoServiceImpl();
-
-	
 
 	@RequestMapping(value = "/resources/{username}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -59,9 +56,21 @@ public class ResourceController {
 	public ResponseEntity<String> getArduinoAddress() {
 		String arduinoAddress = ardServ.findArduinoInNetwork();
 		if (arduinoAddress != null)
-			return new ResponseEntity<>("{\"status\": \""+arduinoAddress+"\"}", HttpStatus.OK);
+			return new ResponseEntity<>("{\"status\": \"" + arduinoAddress + "\"}", HttpStatus.OK);
 		else
-			return new ResponseEntity<>("{\"status\": \""+arduinoAddress+"\"}", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("{\"status\": \"" + arduinoAddress + "\"}", HttpStatus.NOT_FOUND);
+	}
+
+	@RequestMapping(value = "/post-value/{username}/{serial_id}", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<List<pl.bsp.model.Resource>> resources(@PathVariable("username") String userName,
+			@PathVariable("serial_id") String resourceId) {
+		User resourcesOwner = userService.findByUsername(userName);
+		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
+		String arduinoIp = "192.168.0.101";
+		ardServ.turnOnTheLight(arduinoIp,Integer.parseInt(resourceId));
+
+		return new ResponseEntity<>(resources,HttpStatus.OK);
 	}
 
 }
