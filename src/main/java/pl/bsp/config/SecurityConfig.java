@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.httpBasic().and().authorizeRequests()
 				.antMatchers("/css/**","/js/**","/login-post","/user","/index.html","/contact.html",
-						"/register.html","/home.html", "/","/login.html","/register", "/register-post")
+						"/register.html","/home.html", "/","/login.html","/register", "/register-post", "/get-arduino-uno-address")
 				.permitAll().anyRequest().authenticated()
 				.and().formLogin().loginPage("/login.html").permitAll()
 				.and()

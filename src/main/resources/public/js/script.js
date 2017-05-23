@@ -155,8 +155,8 @@ app.controller("registerCtrl", function($scope, $http, $location) {
 	
 	$scope.getIp = function(){
 		
-		$http.get('/get-arduino-uno-address').success(function(data) {
-			console.log(data);
+		$http.get('/get-arduino-uno-address').success(function(response) {
+			console.log(response.status);
 		}).error(function() {
 			console.log("Error with getting ip address");
 		});

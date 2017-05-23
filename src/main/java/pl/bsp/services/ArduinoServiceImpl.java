@@ -90,6 +90,7 @@ public class ArduinoServiceImpl implements ArduinoService {
 				}
 			}
 
+		serverSocket.close();
 		if (arduinoIp != null)
 			return arduinoIp.getHostAddress();
 		return null;
