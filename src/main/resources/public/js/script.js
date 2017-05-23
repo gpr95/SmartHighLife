@@ -32,18 +32,7 @@ app.controller("homeCtrl", function($window) {
 
 app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $location) {
 	
-	///////////////
 	
-	$scope.test = function(){
-		console.log("TEST");
-		
-		$http.get('localhost:8080/gettest', {}).success(function(data) {
-			
-		}).error(function(data) {
-		});
-	};
-	
-	////////////////////
 	$scope.types = ["Sensor", "Active object"];
 	
 	$scope.addDevice = function(){
@@ -95,17 +84,18 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		$scope.error = true;
 	});
 	
-	$scope.getValue = function(localization, serial_id){
+	$scope.getValue = function( serial_id){
 		console.log("Sending get value for" + localization);
-		$http.get('/get-value/' + serial_id).success(function(data) {
-			
-		}).error(function(data) {
+		$http.get('/get-value/'+$window.localStorage.getItem("username")+'/'+ serial_id).success(function(response) {
+			$scope.valueFromResource = response.status;
+		}).error(function(response) {
+			$scope.valueFromResource = "Error getting data.";
 		});
 		
-		$scope.valueFromResource = "8";
+		
 	}
 	
-	$scope.postValue = function(localization, serial_id){
+	$scope.postValue = function(serial_id){
 		
 		var valueToSend = {
 				val:"ON/OFF"
@@ -113,7 +103,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		
 		console.log("Sending post value for" + localization);
 		
-		$http.post('/post-value/' + serial_id, angular.toJson(valueToSend), {
+        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id, {
 			headers : {
 				"content-type" : "application/json",
 				'Accept' : 'application/json'
@@ -140,20 +130,58 @@ app.controller("contactCtrl", function($scope, $http) {
 
 });
 
-app.controller("parentalCtrl", function($scope, $http) {
+app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
+	
+	$scope.types = ["GET", "GET/POST"];
+	$scope.numbers = ["0","1","2","3","4","5","6","7","8"];
 
+	$scope.submitPolicy = function(){
+	
+	$scope.error1 = false;
+	$scope.error2 = false;
+	
+	var policy = {
+			description:$scope.description,
+			resourceName:$scope.resourceName,
+			action:$scope.action,
+			startTime:$scope.startTime,
+			endTime:$scope.endTime,
+			repeatPatern:$scope.repeatPatern,
+			username:$window.localStorage.getItem("username")
+	}
+	
+	if(policy.description == "" || policy.resourceName == "" || policy.action == "", policy.startTime == "", policy.endTime =="" || policy.repeatPatern == "" || policy.username == ""){
+		$scope.error1 = true;
+	}else{
+		$http.post('/parentalPolicy', angular.toJson(policy), {
+			headers : {
+				"content-type" : "application/json",
+				'Accept' : 'application/json'
+			}
+		}).success(function() {
+			console.log("Policy added");
+			$("[data-dismiss=modal]").trigger({ type: "click" });
+		}).error(function(response) {
+			$scope.error2 = true;
+		});
+	}
+
+}
+	
+	$http.get('/parentalPolicies/'+$window.localStorage.getItem("username")).success(function(data) {
+		$scope.data = data;
+		console.log(data);
+		$scope.tableParams = new NgTableParams({}, {
+			dataset : data
+		});
+	}).error(function(data) {
+		$scope.error = true;
+	});
+	
 });
 
 app.controller("registerCtrl", function($scope, $http, $location) {
-	
-//	$scope.user = {};
-//	$scope.user.first_name = "";
-//	$scope.user.last_name = "";
-//	$scope.user.email = "";
-//	$scope.user.username = "";
-//	$scope.user.password = "";
-//	$scope.user.confirm_password = "";
-	
+
 	
 	$scope.getIp = function(){
 		

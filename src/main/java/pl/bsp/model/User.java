@@ -47,6 +47,8 @@ public class User {
 	@JsonBackReference
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ParentalControlPolicy> policies = new ArrayList<>();
+	@Column(name = "ip_address",nullable = false, length = 30)
+    private String ipAddress;
 	
 	
 	public long getId() {
@@ -110,5 +112,11 @@ public class User {
 	public void setPolicies(List<ParentalControlPolicy> policies) {
 		this.policies = policies;
 	}
-    	
+	public String getIpAddress() {
+		return ipAddress;
+	}
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+    
 }

@@ -13,7 +13,7 @@ RF24Network network(radio24);
 /** RF24 IDs */
 const uint16_t pirNodeId = 01;
 const uint16_t serverNodeId = 00;
-
+ 
 /** RF24 send scruct */
 struct payloadRF24Msg
 {
