@@ -32,18 +32,7 @@ app.controller("homeCtrl", function($window) {
 
 app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $location) {
 	
-	///////////////
 	
-	$scope.test = function(){
-		console.log("TEST");
-		
-		$http.get('localhost:8080/gettest', {}).success(function(data) {
-			
-		}).error(function(data) {
-		});
-	};
-	
-	////////////////////
 	$scope.types = ["Sensor", "Active object"];
 	
 	$scope.addDevice = function(){
@@ -140,8 +129,55 @@ app.controller("contactCtrl", function($scope, $http) {
 
 });
 
-app.controller("parentalCtrl", function($scope, $http) {
+app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
+	
+	$scope.types = ["GET", "GET/POST"];
+	$scope.numbers = ["0","1","2","3","4","5","6","7","8"];
 
+	$scope.submitPolicy = function(){
+	
+	$scope.error1 = false;
+	$scope.error2 = false;
+	
+	var policy = {
+			name:$scope.name,
+			description:$scope.description,
+			resourceName:$scope.resourceName,
+			action:$scope.action,
+			startTime:$scope.startTime,
+			endTime:$scope.endTime,
+			repeatPatern:$scope.repeatPatern,
+			username:$window.localStorage.getItem("username")
+	}
+	
+	if(policy.name == "" || policy.description == "" || policy.resourceName == "" || policy.action == "", policy.startTime == "", policy.endTime =="" || policy.repeatPatern == "" || policy.username == ""){
+		$scope.error1 = true;
+	}else{
+		$http.post('/parentalPolicy', angular.toJson(policy), {
+			headers : {
+				"content-type" : "application/json",
+				'Accept' : 'application/json'
+			}
+		}).success(function() {
+			console.log("Policy added");
+			$("[data-dismiss=modal]").trigger({ type: "click" });
+		}).error(function(response) {
+			$scope.error2 = true;
+		});
+	}
+
+}
+	
+	$http.get('/parentalPolicies/'+$window.localStorage.getItem("username")).success(function(data) {
+		$scope.data = data;
+		console.log(data);
+		$scope.tableParams = new NgTableParams({}, {
+			dataset : data
+		});
+	}).error(function(data) {
+		$scope.error = true;
+	});
+	
 });
 
 app.controller("registerCtrl", function($scope, $http, $location) {
