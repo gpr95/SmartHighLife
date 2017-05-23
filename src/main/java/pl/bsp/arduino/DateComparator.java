@@ -10,25 +10,16 @@ import java.util.Comparator;
 /**
  * Created by Kamil on 2017-05-22.
  */
-public class DateComparator implements Comparator<ParentalControlPolicy>{
+public class DateComparator implements Comparator<Event>{
 
     @Override
-    public int compare(ParentalControlPolicy x, ParentalControlPolicy y) {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        java.util.Date dateX = null;
-        java.util.Date dateY = null;
-        try {
-            dateX = format.parse(x.getStartTime());
-            dateY = format.parse(y.getEndTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public int compare(Event x, Event y) {
 
-        if (dateX.getTime() < dateY.getTime())
+        if (x.getTime() < y.getTime())
         {
             return -1;
         }
-        if (dateX.getTime() > dateY.getTime())
+        if (x.getTime() > y.getTime())
         {
             return 1;
         }

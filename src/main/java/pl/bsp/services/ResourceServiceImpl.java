@@ -49,4 +49,9 @@ public class ResourceServiceImpl implements ResourceService{
 			return false;
 		}
 	}
+
+	@Override
+	public pl.bsp.model.Resource findByName(String name) {
+		return null;
+	}
 }

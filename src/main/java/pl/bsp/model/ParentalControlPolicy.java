@@ -3,6 +3,7 @@ package pl.bsp.model;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import pl.bsp.enums.RepeatPatern;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +26,8 @@ public class ParentalControlPolicy {
 	String startTime;
 	@Column(name = "end_time", nullable = false)
 	String endTime;
+	@Column(name = "repeat_patern", nullable = false)
+	int repeatPatern;
 	@JsonManagedReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_user", nullable = false)
@@ -88,5 +91,13 @@ public class ParentalControlPolicy {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public int getRepeatPatern() {
+		return repeatPatern;
+	}
+
+	public void setRepeatPatern(int repeatPatern) {
+		this.repeatPatern = repeatPatern;
 	}
 }

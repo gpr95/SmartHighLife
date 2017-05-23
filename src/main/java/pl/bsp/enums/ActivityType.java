@@ -1,5 +1,7 @@
 package pl.bsp.enums;
 
+import javax.persistence.Entity;
+
 public enum ActivityType {
 	LEAVE(0), ENTER(1);
 	int intValue;
