@@ -35,8 +35,11 @@
 								ng-click="getValue(resource.serialId)" data-toggle="modal"
 								data-target="#rowModal">VALUE</button>
 							<button class="btn btn-primary btn-xs "
-								ng-click="postValue(resource.serialId)"
-								ng-show="checkIfPost(resource.action)">TURN ON/OFF</button>
+								ng-click="postOnValue(resource.serialId)"
+								ng-show="checkIfPost(resource.action,ON)">TURN ON</button>
+								<button class="btn btn-primary btn-xs "
+								ng-click="postOffValue(resource.serialId)"
+								ng-show="checkIfPost(resource.action)">TURN OFF</button>
 						</td>
 					</tr>
 				</table>

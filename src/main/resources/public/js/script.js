@@ -86,7 +86,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 	
 	$scope.getValue = function( serial_id){
 		console.log("Sending get value for" + localization);
-		$http.get('/get-value/'+$window.localStorage.getItem("username")+'/'+ serial_id).success(function(response) {
+		$http.get('/get-value/'+$window.localStorage.getItem("username")+'/'+ serial_id+'/').success(function(response) {
 			$scope.valueFromResource = response.status;
 		}).error(function(response) {
 			$scope.valueFromResource = "Error getting data.";
@@ -95,7 +95,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		
 	}
 	
-	$scope.postValue = function(serial_id){
+	$scope.postOnValue = function(serial_id){
 		
 		var valueToSend = {
 				val:"ON/OFF"
@@ -103,7 +103,29 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		
 		console.log("Sending post value for" + localization);
 		
-        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id, {
+        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id+"ON", {
+			headers : {
+				"content-type" : "application/json",
+				'Accept' : 'application/json'
+			}
+		}).success(function() {
+			console.log("Value send!");
+		}).error(function(response) {
+			console.log("Something wrong with sending");
+		});
+		
+		
+		}
+	
+$scope.postOffValue = function(serial_id){
+		
+		var valueToSend = {
+				val:"ON/OFF"
+		}
+		
+		console.log("Sending post value for" + localization);
+		
+        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id+"OFF", {
 			headers : {
 				"content-type" : "application/json",
 				'Accept' : 'application/json'
@@ -158,8 +180,8 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 				"content-type" : "application/json"
 
 			}
-		}).success(function() {
-			console.log("Policy added");
+		}).success(function(response) {
+			console.log(response.status);
 			$("[data-dismiss=modal]").trigger({ type: "click" });
 		}).error(function(response) {
 			$scope.error2 = true;
