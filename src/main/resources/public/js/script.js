@@ -30,7 +30,7 @@ app.controller("homeCtrl", function($window) {
 	
 });
 
-app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams) {
+app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $location) {
 	
 	///////////////
 	
@@ -77,21 +77,37 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams) {
 				}
 			}).success(function() {
 				console.log("Resource added");
-				$location.path("/login")
 			}).error(function(response) {
 				$scope.error2 = true;
 			});
 		}
 	}
 	
-	$http.get('/resources/').success(function(data) {
+	$http.get('/resources/'+$window.localStorage.getItem("username")).success(function(data) {
+		for(resource in data)
 		$scope.data = data;
+		console.log(data);
 		$scope.tableParams = new NgTableParams({}, {
 			dataset : data
 		});
 	}).error(function(data) {
 		$scope.error = true;
 	});
+	
+	$scope.getValue = function(localization){
+		console.log("Sending get value for" + localization);
+	}
+	
+	$scope.postValue = function(localization){
+		console.log("Sending post value for" + localization);
+		}
+	
+	$scope.checkIfPost = function(action){
+		if(action === "GET/POST")
+			return true;
+		else
+			return false;
+	}
 
 });
 

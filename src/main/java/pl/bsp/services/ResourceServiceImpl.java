@@ -1,5 +1,7 @@
 package pl.bsp.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class ResourceServiceImpl implements ResourceService{
 		}else{
 			resourceToDb.setAction("GET");
 		}
-		Set <pl.bsp.model.Resource> resources = owner.getResources();
+		List<pl.bsp.model.Resource> resources = owner.getResources();
 		resources.add(resourceToDb);
 		resourceRepo.addResource(resourceToDb);
 		userService.update(owner);

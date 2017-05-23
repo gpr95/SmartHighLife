@@ -1,3 +1,19 @@
 logging:
   level:
     org.springframework.security: DEBUG
+
+security:
+  oauth2:
+    client:
+      clientId: 906964090907-f8jjui7sc1u1vh23id7rtvnkdafjjp2n.apps.googleusercontent.com
+      clientSecret: m9xcbtYLDBc2zDzmMD0kf5zx
+      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+      clientAuthenticationScheme: query
+      scope:
+        - openid
+        - https://www.googleapis.com/auth/calendar
+        - profile
+    resource:
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true
