@@ -1,4 +1,5 @@
 #include <SPI.h>
+#include <stdio.h>
 #include <RF24Network.h>
 #include <RF24.h>
 #include <Ethernet.h> 
@@ -75,17 +76,25 @@ void loop()
   if (packetSize) {
     char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
     remoteIp = Udp.remoteIP();
-    Serial.print("RASPBERRY IP:");
-    for (int i = 0; i < 4; i++) {
-      Serial.print(remoteIp[i], DEC);
-      if (i < 3) {
-        Serial.print(".");
-      }
-    }
     remotePort = Udp.remotePort();
-    // read the packet into packetBufffer
+    
+    /** Read the packet into packetBufffer */
     Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-    writeThroughUDP('D');
+    switch(packetBuffer[0]) {
+      case 'X':
+        initializeRemoteIp();
+        break;
+      case 'x':
+        initializeRemoteIp();
+        break;
+      case 'A':
+        addResource(packetBuffer,packetSize);
+        break;
+      case 'a':
+        addResource(packetBuffer,packetSize);
+        break;
+    }
+    
   }
   /** Update network state every loop */
 //  network.update();
@@ -144,6 +153,36 @@ void loop()
  */
                  
 }
+
+void initializeRemoteIp() {
+  //remoteIp = Udp.remoteIP();
+  //remotePort = Udp.remotePort();
+  Serial.print("RASPBERRY IP:");
+  for (int i = 0; i < 4; i++) {
+    Serial.print(remoteIp[i], DEC);
+    if (i < 3) {
+      Serial.print(".");
+    }
+  }
+  Serial.println(" ");
+  writeThroughUDP('D');
+}
+
+void addResource(char serverMsg[], int serverMsgSize) {
+    char resourceId[serverMsgSize -1];
+    for(int i = 1; i < serverMsgSize; i++)
+    {
+      resourceId[i-1] = serverMsg[i];
+      Serial.print(serverMsg[i]);
+    }
+
+    Serial.println(" ");
+    int id ;
+    sscanf(serverMsg, "%d", &id);
+    Serial.print(id);
+    writeThroughUDP('D');
+}
+
 
 void turnOnLight() 
 {
