@@ -25,8 +25,8 @@
   byte mac[] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02 }; 
   unsigned int localPort = 8888;
         
-  IPAddress remoteIp(192, 168, 0, 101);
-  const int remoteP = 8888;
+  IPAddress remoteIp;
+  int remotePort;
   //EthernetServer server(80);
 
 
@@ -70,6 +70,23 @@ void setup()
 /** The loop function runs over and over again forever */
 void loop() 
 {
+  /** WAIT FOR RASPBERRY TO PING */
+  int packetSize = Udp.parsePacket();
+  if (packetSize) {
+    char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
+    remoteIp = Udp.remoteIP();
+    Serial.print("RASPBERRY IP:");
+    for (int i = 0; i < 4; i++) {
+      Serial.print(remoteIp[i], DEC);
+      if (i < 3) {
+        Serial.print(".");
+      }
+    }
+    remotePort = Udp.remotePort();
+    // read the packet into packetBufffer
+    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+    writeThroughUDP('D');
+  }
   /** Update network state every loop */
 //  network.update();
 //  
@@ -86,27 +103,7 @@ void loop()
 //  }
 
   // if there's data available, read a packet
-  int packetSize = Udp.parsePacket();
-  if (packetSize) {
-    char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
-    Serial.print("Received packet of size ");
-    Serial.println(packetSize);
-    Serial.print("From ");
-    IPAddress remote = Udp.remoteIP();
-    for (int i = 0; i < 4; i++) {
-      Serial.print(remote[i], DEC);
-      if (i < 3) {
-        Serial.print(".");
-      }
-    }
-    Serial.print(", port ");
-    Serial.println(Udp.remotePort());
-    // read the packet into packetBufffer
-    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-    Serial.println("Contents:");
-    Serial.println(packetBuffer);
-    writeThroughUDP('X');
-  }
+  
 
   // if an incoming client connects, there will be bytes available to read:
 //  EthernetClient client = server.available();
@@ -177,7 +174,7 @@ void turnOffLight()
 
 void writeThroughUDP(unsigned char msg) 
 {
-    Udp.beginPacket(remoteIp, remoteP); 
+    Udp.beginPacket(remoteIp, remotePort); 
     Udp.write(msg);
     Udp.endPacket();
 }
