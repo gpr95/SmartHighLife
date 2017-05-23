@@ -39,6 +39,7 @@ public class ParentalControlThread {
         for (ParentalControlPolicy policy : policies) {
             addPolicy(policy);
         }
+        (new Thread(new QueueCheckingThread())).start();
 
     }
 
@@ -101,6 +102,30 @@ public class ParentalControlThread {
                      * KAMIL ZROBI: jesli repeatAction nie once to ponownie dodac event do kolejki ze zwiekszonym czasem
                      *
                      * */
+
+                    if(event.getRepeatPatern() != RepeatPatern.ONCE) {
+                        switch (event.getRepeatPatern()) {
+                            case EVERY_MILISECOND:
+                                event.setTime(event.getTime() + 1);
+                                break;
+                            case EVERY_SECOND:
+                                event.setTime(event.getTime() + 1000);
+                                break;
+                            case EVERY_MINUTE:
+                                event.setTime(event.getTime() + 60 * 1000);
+                                break;
+                            case DAILY:
+                                event.setTime(event.getTime() + 3600 * 1000);
+                                break;
+                            case WEEKLY:
+                                event.setTime(event.getTime() + 7 * 3600 * 1000);
+                                break;
+                            case MONTHLY:
+                                event.setTime(event.getTime() + 30 * 7 * 3600 * 1000);
+                                break;
+                        }
+                        policyQueue.add(event);
+                    }
                 }
             }
         }
