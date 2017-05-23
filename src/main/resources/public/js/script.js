@@ -77,6 +77,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 				}
 			}).success(function() {
 				console.log("Resource added");
+				$("[data-dismiss=modal]").trigger({ type: "click" });
 			}).error(function(response) {
 				$scope.error2 = true;
 			});
@@ -84,7 +85,6 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 	}
 	
 	$http.get('/resources/'+$window.localStorage.getItem("username")).success(function(data) {
-		for(resource in data)
 		$scope.data = data;
 		console.log(data);
 		$scope.tableParams = new NgTableParams({}, {
@@ -96,10 +96,33 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 	
 	$scope.getValue = function(localization){
 		console.log("Sending get value for" + localization);
+		$http.get('/get-value/').success(function(data) {
+			
+		}).error(function(data) {
+		});
+		
+		$scope.valueFromResource = "8";
 	}
 	
 	$scope.postValue = function(localization){
+		var valueToSend = {
+				name:"vaaalue"
+		}
+		
 		console.log("Sending post value for" + localization);
+		
+		$http.post('post-value', angular.toJson(valueToSend), {
+			headers : {
+				"content-type" : "application/json",
+				'Accept' : 'application/json'
+			}
+		}).success(function() {
+			console.log("Value send!");
+		}).error(function(response) {
+			console.log("Something wrong with sending");
+		});
+		
+		
 		}
 	
 	$scope.checkIfPost = function(action){
@@ -128,6 +151,17 @@ app.controller("registerCtrl", function($scope, $http, $location) {
 //	$scope.user.username = "";
 //	$scope.user.password = "";
 //	$scope.user.confirm_password = "";
+	
+	
+	$scope.getIp = function(){
+		
+		$http.get('/get-arduino-uno-address').success(function(data) {
+			console.log(data);
+		}).error(function() {
+			console.log("Error with getting ip address");
+		});
+		
+	}
 
 	$scope.register = function() {
 		var user = { 
@@ -136,7 +170,8 @@ app.controller("registerCtrl", function($scope, $http, $location) {
 				email:$scope.email,
 				username:$scope.username,
 				password:$scope.password,
-				confirm_password: $scope.confirm_password
+				confirm_password: $scope.confirm_password,
+				ip_address: $scope.ip_address
 		}
 		
 		$scope.error1 = false;

@@ -1,86 +1,115 @@
-<div ng-controller="devicesCtrl as devicesCtrl" ng-cloak class="ng-cloak">
-<div class="jumbotron text-center" >
-    <h1>Manage your resources! </h1>
-    <br>
-    <div class="alert alert-danger" ng-show="error">
-	There was a problem with accessing your devices. Please try again.
-</div>
-<div class="row">
-<div class="col-6 col-md-1"></div>
-<div class="col-6 col-md-2">
-<button class="btn btn-success btn-sm btn-block" data-toggle="modal" data-target="#addResourceModal">Add resource</button>
-</div>
-</div>
-<br>
- <div class="row">
- <div class="col-6 col-md-1"></div>
- <div class="col-6 col-md-10">
-    <table ng-table="tableParams" class="table" show-filter="true">
-							<tr ng-repeat="resource in data">
-								<td title="'Name'" filter="{ name: 'text'}" sortable="'name'">{{resource.name}}
-								</td>
-								<td title="'Description'" filter="{ description: 'text'}" sortable="'description'">{{resource.description}}
-								</td>
-								<td title="'Localization'" filter="{ localization: 'text'}" sortable="'localization'">{{resource.localization}}
-								</td>
-								<td title="'Resource type'" filter="{ resourceType: 'text'}" sortable="'resourceType'">{{resource.resourceType}}
-								</td>
-								<td title="'Action'" filter="{ action: 'text'}" sortable="'action'">
-								<button class="btn btn-primary btn-xs " ng-click="getValue(resource.localization)" >GET</button>
-								<button class="btn btn-primary btn-xs " ng-click="postValue(resource.localization)" ng-show ="checkIfPost(resource.action)">POST</button>
-								</td>
-							</tr>
-						</table>
+<div ng-controller="devicesCtrl as devicesCtrl" ng-cloak
+	class="ng-cloak">
+	<div class="jumbotron text-center">
+		<h1>Manage your resources!</h1>
+		<br>
+		<br>
+		<br>
+		<div class="alert alert-danger" ng-show="error">There was a
+			problem with accessing your devices. Please try again.</div>
+		<div class="row">
+			<div class="col-6 col-md-1"></div>
+			<div class="col-6 col-md-2">
+				<button class="btn btn-success btn-sm btn-block" data-toggle="modal"
+					data-target="#addResourceModal">Add resource</button>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-6 col-md-1"></div>
+			<div class="col-6 col-md-10">
+				<table ng-table="tableParams" class="table" >
+					<tr ng-repeat="resource in data">
+						<td title="'Name'"  sortable="'name'">{{resource.name}}
+						</td>
+						<td title="'Resource type'" 
+							sortable="'resourceType'">{{resource.resourceType}}</td>
+						<td title="'Localization'"
+							sortable="'localization'">{{resource.localization}}</td>
+						<td title="'Description'" 
+							sortable="'description'">{{resource.description}}</td>
+						<td title="'Action'" >
+							<button class="btn btn-primary btn-xs "
+								ng-click="getValue(resource.localization)" data-toggle="modal"
+								data-target="#rowModal">VALUE</button>
+							<button class="btn btn-primary btn-xs "
+								ng-click="postValue(resource.localization)"
+								ng-show="checkIfPost(resource.action)">TURN ON/OFF</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-6 col-md-1"></div>
+		</div>
+	</div>
+
+
+	<!-- Modal -->
+	<div id="addResourceModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">New Device:</h4>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-danger" ng-show="error1">Please fill
+						all fields.</div>
+					<div class="alert alert-danger" ng-show="error2">There was a
+						problem with your request. Please try again.</div>
+					<form role="form" ng-submit="submitResource()">
+						<div class="form-group">
+							<label for="name">Name:</label> <input type="text"
+								class="form-control" id="username" name="name" ng-model="name" />
 						</div>
-						<div class="col-6 col-md-1"></div>
-     </div>
-</div>
-
-
-<button class="btn btn-danger btn-sm btn-block" ng-click="test()">TEST</button>
-
-
-<!-- Modal -->
-<div id="addResourceModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">New Device:</h4>
-      </div>
-      <div class="modal-body">
-      <div class="alert alert-danger" ng-show="error1">Please fill all fields.</div>
-      <div class="alert alert-danger" ng-show="error2">There was a problem with your request. Please try again.</div>
-        <form role="form" ng-submit="submitResource()">
-			<div class="form-group">
-				<label for="name">Name:</label> <input type="text"
-					class="form-control" id="username" name="name"
-					ng-model="name" />
+						<div class="form-group">
+							<label for="name">Resource type:</label> <select
+								class="form-control" ng-model="resourceType"
+								ng-options="x for x in types">
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="name">Localization:</label> <input type="text"
+								class="form-control" id="localization" name="localization"
+								ng-model="localization" />
+						</div>
+						<div class="form-group">
+							<label for="description">Description:</label>
+							<textarea class="form-control" rows="3" id="description"
+								ng-model="description"></textarea>
+						</div>
+						<button type="submit" class="btn btn-success">Add!</button>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
 			</div>
-			<div class="form-group">
-				<label for="name">Resource type:</label> <select class="form-control" ng-model="resourceType" ng-options="x for x in types">
-				</select>
-			</div>
-			<div class="form-group">
-				<label for="name">Localization:</label> <input type="text"
-					class="form-control" id="localization" name="localization"
-					ng-model="localization" />
-			</div>
-			<div class="form-group">
-			  <label for="description">Description:</label>
-			  <textarea class="form-control" rows="3" id="description"
-			  ng-model="description"></textarea>
-			</div>
-			<button type="submit" class="btn btn-success">Add!</button>
-		</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
 
-  </div>
-</div>
+		</div>
+	</div>
+
+
+	<div id="rowModal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Value from resource:</h4>
+				</div>
+				<div class="modal-body">
+					<p>{{valueFromResource}}</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
 </div>
