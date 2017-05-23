@@ -101,15 +101,30 @@ public class ArduinoServiceImpl implements ArduinoService {
 
 	@Override
 	public void turnOnTheLight(String arduinoIp, int resourceId) {
-		writeMsgToArduino("NNN",arduinoIp);
+		writeMsgToArduino("N"+resourceId, arduinoIp);
 	}
 
 	@Override
 	public void turnOffTheLight(String arduinoIp, int resourceId) {
-		writeMsgToArduino("FFF",arduinoIp);
+		writeMsgToArduino("F"+resourceId, arduinoIp);
 	}
-	
-	private void writeMsgToArduino(String msg,String arduinoIp) {
+
+	@Override
+	public String getResourceValue(String arduinoIp, int resourceId) {
+		String returnedValue = writeMsgToArduino("G"+resourceId, arduinoIp);
+
+		switch (returnedValue) {
+		case "N":
+			return "ON";
+		case "F":
+			return "OFF";
+		default:
+			return returnedValue;
+		}
+	}
+
+	private String writeMsgToArduino(String msg, String arduinoIp) {
+		String received = null;
 		byte[] sendData = msg.getBytes();
 		byte[] receiveData = new byte[1024];
 		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -127,7 +142,7 @@ public class ArduinoServiceImpl implements ArduinoService {
 						InetAddress.getByName(arduinoIp), 8888);
 				serverSocket.send(sendPacket);
 				serverSocket.receive(receivePacket);
-				String received = new String(receivePacket.getData());
+				received = new String(receivePacket.getData());
 				System.out.println(received);
 				retransmit = false;
 			} catch (SocketTimeoutException e) {
@@ -138,8 +153,10 @@ public class ArduinoServiceImpl implements ArduinoService {
 				e.printStackTrace();
 			}
 		} while (retransmit);
+		
 		serverSocket.close();
 
+		return received;
 	}
 
 }

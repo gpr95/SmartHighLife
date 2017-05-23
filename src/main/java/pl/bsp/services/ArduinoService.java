@@ -4,4 +4,5 @@ public interface ArduinoService {
 	public String findArduinoInNetwork();
 	public void turnOnTheLight(String arduinoIp, int resourceId);
 	public void turnOffTheLight(String arduinoIp, int resourceId);
+	public String getResourceValue(String arduinoIp, int resourceId);
 }

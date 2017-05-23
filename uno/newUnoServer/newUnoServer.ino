@@ -173,7 +173,7 @@ void addResource(char serverMsg[], int serverMsgSize) {
   id = atoi(resourceId);
   Serial.print(id);
   writeThroughUDP('D');
-  writeIdThroughRF24('x', id);
+  writeThroughRF24(48,'x', id);
 }
 
 void getResource(char serverMsg[], int serverMsgSize) {
@@ -190,7 +190,7 @@ void getResource(char serverMsg[], int serverMsgSize) {
   Serial.print(id);
 
   if (id < 40000) {
-    writeIdThroughRF24('g', id);
+    writeThroughRF24(48,'g', id);
     network.update();
 
     /** If something is waiting in network */
@@ -211,8 +211,6 @@ void getResource(char serverMsg[], int serverMsgSize) {
     else
       writeThroughUDP('F');
   }
-
-  writeThroughUDP('D');
 }
 
 
@@ -250,7 +248,7 @@ void writeThroughUDP(unsigned char msg)
   Udp.endPacket();
 }
 
-void writeIdThroughRF24(char type, int id)
+void writeThroughRF24(int value, char type, int id)
 {
   RF24NetworkHeader header(01);
   payloadRF24Msg payload = {48, id, type};

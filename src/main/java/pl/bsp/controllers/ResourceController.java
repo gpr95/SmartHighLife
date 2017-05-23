@@ -63,14 +63,28 @@ public class ResourceController {
 
 	@RequestMapping(value = "/post-value/{username}/{serial_id}", method = RequestMethod.GET, produces = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<List<pl.bsp.model.Resource>> resources(@PathVariable("username") String userName,
+	public ResponseEntity<List<pl.bsp.model.Resource>> postValueToResource(@PathVariable("username") String userName,
 			@PathVariable("serial_id") String resourceId) {
 		User resourcesOwner = userService.findByUsername(userName);
 		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
-		String arduinoIp = "192.168.0.101";
+		String arduinoIp = resourcesOwner.getIpAddress();
 		ardServ.turnOnTheLight(arduinoIp,Integer.parseInt(resourceId));
 
 		return new ResponseEntity<>(resources,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/get-value/{username}/{serial_id}", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<String> getValueFrnResource(@PathVariable("username") String userName,
+			@PathVariable("serial_id") String resourceId) {
+		User resourcesOwner = userService.findByUsername(userName);
+		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
+		String arduinoIp = resourcesOwner.getIpAddress();
+		String result = ardServ.getResourceValue(arduinoIp,Integer.parseInt(resourceId));
+		if (result != null && !result.isEmpty())
+			return new ResponseEntity<>("{\"status\": \"" + result + "\"}",HttpStatus.OK);
+		else
+			return new ResponseEntity<>("{\"status\": \"" + result + "\"}",HttpStatus.NOT_FOUND);
 	}
 
 }
