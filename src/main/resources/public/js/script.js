@@ -181,7 +181,7 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 				'Accept' : 'application/json'
 			}
 		}).success(function(response) {
-			console.log("Policy added");
+			console.log(response.status);
 			$("[data-dismiss=modal]").trigger({ type: "click" });
 		}).error(function(response) {
 			$scope.error2 = true;
