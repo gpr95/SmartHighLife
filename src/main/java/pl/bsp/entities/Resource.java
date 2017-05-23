@@ -10,6 +10,7 @@ public class Resource
     String localization;
     String resourceType;
     String username;
+    int serial_id;
 
     public String getName() {
         return name;
@@ -50,5 +51,14 @@ public class Resource
 	public void setUsername(String username) {
 		this.username = username;
 	}
-    
+
+	public int getSerial_id() {
+		return serial_id;
+	}
+
+	public void setSerial_id(int serial_id) {
+		this.serial_id = serial_id;
+	}
+	
+	
 }

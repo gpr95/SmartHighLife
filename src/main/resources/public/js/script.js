@@ -60,6 +60,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		$scope.error2 = false;
 		
 		var resource = {
+				serial_id:$scope.serial_id,
 				name:$scope.name,
 				resourceType:$scope.resourceType,
 				localization:$scope.localization,
@@ -67,7 +68,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 				username:$window.localStorage.getItem("username")
 		}
 		
-		if(resource.name == "" || resource.resourceType == "" || resource.localization == "" || resource.description == ""){
+		if(resource.serial_id == "" || resource.name == "" || resource.resourceType == "" || resource.localization == "" || resource.description == ""){
 			$scope.error1 = true;
 		}else{
 			$http.post('add-resource', angular.toJson(resource), {
@@ -94,9 +95,9 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		$scope.error = true;
 	});
 	
-	$scope.getValue = function(localization){
+	$scope.getValue = function(localization, serial_id){
 		console.log("Sending get value for" + localization);
-		$http.get('/get-value/').success(function(data) {
+		$http.get('/get-value/' + serial_id).success(function(data) {
 			
 		}).error(function(data) {
 		});
@@ -104,14 +105,14 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		$scope.valueFromResource = "8";
 	}
 	
-	$scope.postValue = function(localization){
+	$scope.postValue = function(localization, serial_id){
 		var valueToSend = {
-				name:"vaaalue"
+				val:"vaaalue"
 		}
 		
 		console.log("Sending post value for" + localization);
 		
-		$http.post('post-value', angular.toJson(valueToSend), {
+		$http.post('post-value' + serial_id, angular.toJson(valueToSend), {
 			headers : {
 				"content-type" : "application/json",
 				'Accept' : 'application/json'
@@ -157,6 +158,7 @@ app.controller("registerCtrl", function($scope, $http, $location) {
 		
 		$http.get('/get-arduino-uno-address').success(function(response) {
 			console.log(response.status);
+			$scope.ip_address = response.status;
 		}).error(function() {
 			console.log("Error with getting ip address");
 		});

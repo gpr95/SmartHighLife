@@ -16,14 +16,15 @@
 			<div class="main-login main-center">
 			<div class="alert alert-danger" ng-show="error3">Password do not match!</div>
 			<div class="row">
-			 <div class="col-6 col-md-4"></div>
-			 <div class="col-6 col-md-4">
+			 <div class="col-6 col-md-3"></div>
+			 <div class="col-6 col-md-6">
 			<div class="main-login main-center">
 				<form role="form"  ng-submit="register()">
+					
 					<div class="form-group">
-						<label for="name" class="cols-sm-2 control-label">First
+						<label for="name" class="col-sm-3 control-label">First
 							Name</label>
-						<div class="cols-sm-10">
+						<div class="col-sm-9">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-user fa"
 									aria-hidden="true"></i></span> <input type="text" class="form-control"
@@ -33,9 +34,9 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="name" class="cols-sm-2 control-label">Last
+						<label for="name" class="col-sm-3 control-label">Last
 							Name</label>
-						<div class="cols-sm-10">
+						<div class="col-sm-9">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-user fa"
 									aria-hidden="true"></i></span> <input type="text" class="form-control"
@@ -45,9 +46,9 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="email" class="cols-sm-2 control-label">Your
+						<label for="email" class="col-sm-3 control-label">Your
 							Email</label>
-						<div class="cols-sm-10">
+						<div class="col-sm-9">
 							<div class="input-group">
 								<span class="input-group-addon"><i
 									class="fa fa-envelope fa" aria-hidden="true"></i></span> <input
@@ -58,8 +59,8 @@
 					</div>
 
 					<div class="form-group">
-						<label for="username" class="cols-sm-2 control-label">Username</label>
-						<div class="cols-sm-10">
+						<label for="username" class="col-sm-3 control-label">Username</label>
+						<div class="col-sm-9">
 							<div class="input-group">
 								<span class="input-group-addon"><i class="fa fa-users fa"
 									aria-hidden="true"></i></span> <input type="text" class="form-control"
@@ -70,8 +71,8 @@
 					</div>
 
 					<div class="form-group">
-						<label for="password" class="cols-sd-2 control-label">Password</label>
-						<div class="cols-sm-10">
+						<label class="col-sm-3 control-label" for="password" >Password</label>
+						<div class="col-sm-9">
 							<div class="input-group">
 								<span class="input-group-addon"><i
 									class="fa fa-lock fa-lg" aria-hidden="true"></i></span> <input
@@ -83,9 +84,9 @@
 					</div>
 
 					<div class="form-group">
-						<label for="confirm" class="cols-sm-2 control-label">Confirm
+						<label class="col-sm-3 control-label" for="confirm">Confirm
 							Password</label>
-						<div class="cols-sm-10">
+						<div class="col-sm-9">
 							<div class="input-group">
 								<span class="input-group-addon"><i
 									class="fa fa-lock fa-lg" aria-hidden="true"></i></span> <input
@@ -97,16 +98,18 @@
 					</div>
 					
 					<div class="form-group">
-						<label for="confirm" class="cols-sm-2 control-label">Ip address</label>
-						<div class="cols-sm-10">
+						<label for="ip_address" class="col-sm-3 control-label">IP address</label>
+						<div class="col-sm-7">
 							<div class="input-group">
-								<span class="input-group-addon"><i
-									class="fa fa-cog fa-lg" aria-hidden="true"></i></span> <input
-									type="text" class="form-control" name="ip_address"
-									id="ip_address" 
-									placeholder="You server address" ng-model="ip_address"/>
+								<span class="input-group-addon"><i class="fa fa-cog fa"
+									aria-hidden="true"></i></span> <input type="text" class="form-control"
+									name="ip_address" id="ip_address" 
+									placeholder="Get your server ip address" ng-model="ip_address"/>
 							</div>
-								
+						</div>
+						<div class="col-sm-2">
+							<button ng-click="getIp()"
+									class="btn btn-primary btn-sm ">Get IP</button>
 						</div>
 					</div>
 
@@ -118,11 +121,10 @@
 						<a href="http://localhost:8080/#/login">Return to login page</a>
 					</div>
 				</form>
-				<button ng-click="getIp()"
-									class="btn btn-primary btn-sm">Get IP</button>
+				
 			</div>
 			</div>
-			<div class="col-6 col-md-4"></div>
+			<div class="col-6 col-md-3"></div>
 			</div>
 		</div>
 	</div>

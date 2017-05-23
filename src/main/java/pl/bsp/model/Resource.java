@@ -39,6 +39,8 @@ public class Resource {
 	private User user;
 	@Column(name = "action", nullable = false)
 	String action;
+	@Column(name="serial_id", nullable = false)
+	int serialId;
 //	@OneToMany(fetch = FetchType.LAZY, mappedBy = "resource")
 //	private Set<Action> actions = new HashSet<>();
 	
@@ -84,12 +86,13 @@ public class Resource {
 	public void setAction(String action) {
 		this.action = action;
 	}
+	public int getSerialId() {
+		return serialId;
+	}
+	public void setSerialId(int serialId) {
+		this.serialId = serialId;
+	}
 	
-//	public Set<Action> getActions() {
-//		return actions;
-//	}
-//	public void setActions(Set<Action> actions) {
-//		this.actions = actions;
-//	}
+	
 	
 }

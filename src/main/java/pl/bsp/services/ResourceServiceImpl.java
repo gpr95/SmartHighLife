@@ -34,6 +34,7 @@ public class ResourceServiceImpl implements ResourceService{
 		resourceToDb.setDescription(resourceToAdd.getDescription());
 		resourceToDb.setLocalization(resourceToAdd.getLocalization());
 		resourceToDb.setResourceType(resourceToAdd.getResourceType());
+		resourceToDb.setSerialId(resourceToAdd.getSerial_id());
 		resourceToDb.setUser(owner);
 		if(resourceToAdd.getResourceType().equals(ResourceType.ACTIVE_OBJECT)){
 			resourceToDb.setAction("GET/POST");
