@@ -13,7 +13,7 @@ RF24Network network(radio24);
 /** RF24 IDs */
 const uint16_t pirNodeId = 01;
 const uint16_t serverNodeId = 00;
- 
+
 /** RF24 send scruct */
 struct payloadRF24Msg
 {
@@ -29,7 +29,7 @@ const int inPirDigitalPIN = 4;
 const int outPirDigitalPIN = 5;
 
 /** Device id used in communication with serwer */
-char id = '0';
+char id = 0;
 
 /** Value read from the pir values = HIRH/LOW */
 int inPirSensorValue = 0;
@@ -79,7 +79,7 @@ void loop()
     {
       sendhumanCounterThroughRF24();
     }
-    if(message.type == 'x') {
+    if(message.type == 'x' && id == '0') {
       id = message.id;
       Serial.print("ID assigned! :");
     }
