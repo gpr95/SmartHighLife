@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import pl.bsp.arduino.NumberOfPeopleInRoomCounterThread;
+import pl.bsp.arduino.ObserveMotion;
 
 @SpringBootApplication
 //@EnableOAuth2Sso

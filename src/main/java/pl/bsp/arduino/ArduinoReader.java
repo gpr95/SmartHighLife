@@ -2,7 +2,7 @@ package pl.bsp.arduino;
 
 public class ArduinoReader {
 	private static ArduinoReader instance = null;
-
+	public static boolean iNeedToCheckDatabase = false;
 	/** Exists only to defeat instantiation. (SINGLETON) */
 	protected ArduinoReader() {
 	}
@@ -14,9 +14,4 @@ public class ArduinoReader {
 		return instance;
 	}
 	
-	public void startReadingDeviceValue() {
-		NumberOfPeopleInRoomCounterThread runnable = new NumberOfPeopleInRoomCounterThread(8888);
-		Thread thread = new Thread(runnable);
-		thread.start();
-	}
 }

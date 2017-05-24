@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import pl.bsp.arduino.ArduinoReader;
+import pl.bsp.arduino.ObserveMotion;
 import pl.bsp.entities.Resource;
 import pl.bsp.model.User;
 import pl.bsp.services.ArduinoService;
@@ -44,6 +46,7 @@ public class ResourceController {
 	@RequestMapping(value = "/add-resource", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Resource> addResource(@RequestBody Resource resource) {
+		ArduinoReader.iNeedToCheckDatabase = true;
 		if (resServ.addResource(resource))
 			return new ResponseEntity<>(resource, HttpStatus.OK);
 		else
@@ -68,14 +71,11 @@ public class ResourceController {
 		List<pl.bsp.model.Resource> resources = resourcesOwner.getResources();
 		String arduinoIp = resourcesOwner.getIpAddress();
 		int serialId = Integer.parseInt(resourceId);
-		if (serialId < 100) {
-			if (val.equals("ON"))
-				ardServ.turnOnTheLight(arduinoIp, serialId);
-			else if (val.equals("OFF"))
-				ardServ.turnOffTheLight(arduinoIp, serialId);
-		} else {
-			
-		}
+
+		if (val.equals("ON"))
+			ardServ.turnOnTheLight(arduinoIp, serialId);
+		else if (val.equals("OFF"))
+			ardServ.turnOffTheLight(arduinoIp, serialId);
 		return new ResponseEntity<>(resources, HttpStatus.OK);
 	}
 
