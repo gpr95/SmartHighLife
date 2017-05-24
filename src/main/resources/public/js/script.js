@@ -115,7 +115,7 @@ app.controller("resourcesCtrl", function($scope, $http, $window, NgTableParams, 
 		
 		console.log("Sending post value for" + localization);
 		
-        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id+"ON", {
+        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id+'/'+"ON", {
 			headers : {
 				"content-type" : "application/json",
 				'Accept' : 'application/json'
@@ -137,7 +137,7 @@ $scope.postOffValue = function(serial_id){
 		
 		console.log("Sending post value for" + localization);
 		
-        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id+"OFF", {
+        $http.get('/post-value/'+$window.localStorage.getItem("username")+'/'+ serial_id+'/'+"OFF", {
 			headers : {
 				"content-type" : "application/json",
 				'Accept' : 'application/json'
@@ -202,8 +202,8 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 	}else{
 		$http.post('/parentalPolicy', angular.toJson(policy), {
 			headers : {
-				"content-type" : "application/json",
-				'Accept' : 'application/json'
+				"content-type" : "application/json"
+
 			}
 		}).success(function(response) {
 			console.log(response.status);

@@ -1,9 +1,9 @@
 #include <SPI.h>
 #include <stdio.h>
-#include <RF24Network.h>
-#include <RF24.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
+#include <RF24Network.h>
+#include <RF24.h>
 
 /** nRF24L01(+) radio attached to SPI and pins 6,7 */
 RF24 radio(6, 7);
@@ -11,15 +11,15 @@ RF24 radio(6, 7);
 RF24Network network(radio);
 
 /** RF24 IDs */
+const uint16_t nodeId = 01;
 const uint16_t serverNodeId = 00;
 
 /** RF24 receive scruct */
 struct payloadRF24Msg
 {
-  char value;
-  int id;
-  //n - notyfication, r - reply, g - get
-  char type;
+  unsigned char value;
+  unsigned char id;
+  unsigned char type;
 };
 
 
@@ -46,9 +46,9 @@ void setup()
 {
   /** Initialize serial communications at 9600 bps */
   Serial.begin(9600);
+  
   /** Initialize SPI pins for RF24 module */
   SPI.begin();
-
   radio.begin();
   /** Channel 90 communication to this node */
   network.begin(90, serverNodeId);
@@ -73,76 +73,73 @@ void setup()
 /** The loop function runs over and over again forever */
 void loop()
 {
-  /** WAIT FOR RASPBERRY TO PING */
-  int packetSize = Udp.parsePacket();
-  if (packetSize) {
-    char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
-    remoteIp = Udp.remoteIP();
-    remotePort = Udp.remotePort();
-    /** Read the packet into packetBufffer */
-    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-    for (int i = 0; i < packetSize; i++) {
-      Serial.print(packetBuffer[i]);
-    }
-    Serial.println(" ");
-
-    switch (packetBuffer[0]) {
-      case 'X':
-        initializeRemoteIp();
-        break;
-      case 'x':
-        initializeRemoteIp();
-        break;
-      case 'A':
-        addResource(packetBuffer, packetSize);
-        break;
-      case 'a':
-        addResource(packetBuffer, packetSize);
-        break;
-      case 'N':
-        turnOnLight();
-        turnOffLight();
-        turnOnLight();
-        writeThroughUDP('D');
-        break;
-      case 'n':
-        turnOnLight();
-        turnOffLight();
-        turnOnLight();
-        writeThroughUDP('D');
-        break;
-      case 'F':
-        turnOffLight();
-        writeThroughUDP('D');
-        break;
-      case 'f':
-        turnOffLight();
-        writeThroughUDP('D');
-        break;
-      case 'G':
-        getResource(packetBuffer, packetSize);
-        break;
-      case 'g':
-        getResource(packetBuffer, packetSize);
-        break;
-
-    }
-
-  }
+  network.update();
+//  /** WAIT FOR RASPBERRY TO PING */
+//  int packetSize = Udp.parsePacket();
+//  if (packetSize) {
+//    char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
+//    remoteIp = Udp.remoteIP();
+//    remotePort = Udp.remotePort();
+//    /** Read the packet into packetBufffer */
+//    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+//    for (int i = 0; i < packetSize; i++) {
+//      Serial.print(packetBuffer[i]);
+//    }
+//    Serial.println(" ");
+//
+//    switch (packetBuffer[0]) {
+//      case 'X':
+//        initializeRemoteIp();
+//        break;
+//      case 'x':
+//        initializeRemoteIp();
+//        break;
+//      case 'A':
+//        addResource(packetBuffer, packetSize);
+//        break;
+//      case 'a':
+//        addResource(packetBuffer, packetSize);
+//        break;
+//      case 'N':
+//        turnOnLight();
+//        writeThroughUDP('D');
+//        break;
+//      case 'n':
+//        turnOnLight();
+//        writeThroughUDP('D');
+//        break;
+//      case 'F':
+//        turnOffLight();
+//        writeThroughUDP('D');
+//        break;
+//      case 'f':
+//        turnOffLight();
+//        writeThroughUDP('D');
+//        break;
+//      case 'G':
+//        getResource(packetBuffer, packetSize);
+//        break;
+//      case 'g':
+//        getResource(packetBuffer, packetSize);
+//        break;
+//
+//    }
+//
+//  }
   /** Update network state every loop */
   network.update();
-
+  writeThroughRF24(0,'x','g');
   /** If something is waiting in network */
-  if (network.available())
-  {
-    RF24NetworkHeader header;
-    payloadRF24Msg message;
-    network.read(header, &message, sizeof(message));
-
-    /** If someone sended 1 turn the light on and write broadcast `x`*/
-    //        writeThroughUDP(message.value);
-    //        Serial.println(message.value);
-  }
+//  if (network.available())
+//  {
+//    RF24NetworkHeader header;
+//    payloadRF24Msg message;
+//    network.read(header, &message, sizeof(message));
+//    Serial.println(message.value);
+//    /** If someone sended 1 turn the light on and write broadcast `x`*/
+//    //        writeThroughUDP(message.value);
+//    //        Serial.println(message.value);
+//  }
 
 }
 
@@ -161,35 +158,19 @@ void initializeRemoteIp() {
 }
 
 void addResource(char serverMsg[], int serverMsgSize) {
-  char resourceId[serverMsgSize];
-  for (int i = 1; i < serverMsgSize; i++)
-  {
-    resourceId[i - 1] = serverMsg[i];
-  }
-  resourceId[serverMsgSize - 1] = '\0';
-
   Serial.println(" ");
-  int id ;
-  id = atoi(resourceId);
+  char id =  serverMsg[1];
   Serial.print(id);
   writeThroughUDP('D');
   writeThroughRF24(48,'x', id);
 }
 
 void getResource(char serverMsg[], int serverMsgSize) {
-  char resourceId[serverMsgSize];
-  for (int i = 1; i < serverMsgSize; i++)
-  {
-    resourceId[i - 1] = serverMsg[i];
-  }
-  resourceId[serverMsgSize - 1] = '\0';
-
   Serial.println(" ");
-  int id ;
-  id = atoi(resourceId);
+  char id =  serverMsg[1];
   Serial.print(id);
 
-  if (id > 40000) {
+  if (id > 100) {
     writeThroughRF24(48,'g', id);
     network.update();
 
@@ -248,10 +229,10 @@ void writeThroughUDP(unsigned char msg)
   Udp.endPacket();
 }
 
-void writeThroughRF24(int value, char type, int id)
+void writeThroughRF24(int value, char type, char id)
 {
-  RF24NetworkHeader header(01);
   payloadRF24Msg payload = {48, id, type};
+  RF24NetworkHeader header(nodeId);
   bool ok = network.write(header, &payload, sizeof(payload));
   if (ok)
   {

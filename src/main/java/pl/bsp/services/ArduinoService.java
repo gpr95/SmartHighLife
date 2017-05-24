@@ -5,4 +5,5 @@ public interface ArduinoService {
 	public void turnOnTheLight(String arduinoIp, int resourceId);
 	public void turnOffTheLight(String arduinoIp, int resourceId);
 	public String getResourceValue(String arduinoIp, int resourceId);
+	public void addNewResource(String arduinoIp, int resourceId);
 }

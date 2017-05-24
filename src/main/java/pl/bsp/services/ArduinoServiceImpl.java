@@ -98,15 +98,23 @@ public class ArduinoServiceImpl implements ArduinoService {
 			return arduinoIp.getHostAddress();
 		return null;
 	}
+	
+	@Override
+	public void addNewResource(String arduinoIp, int resourceId) {
+		char id = (char) resourceId;
+		writeMsgToArduino("A" + id, arduinoIp);
+	}
 
 	@Override
 	public void turnOnTheLight(String arduinoIp, int resourceId) {
-		writeMsgToArduino("N" + resourceId, arduinoIp);
+		char id = (char) resourceId;
+		writeMsgToArduino("N" + id, arduinoIp);
 	}
 
 	@Override
 	public void turnOffTheLight(String arduinoIp, int resourceId) {
-		writeMsgToArduino("F" + resourceId, arduinoIp);
+		char id = (char) resourceId;
+		writeMsgToArduino("F" + id, arduinoIp);
 	}
 
 	@Override
@@ -187,5 +195,7 @@ public class ArduinoServiceImpl implements ArduinoService {
 
 		return received;
 	}
+
+	
 
 }

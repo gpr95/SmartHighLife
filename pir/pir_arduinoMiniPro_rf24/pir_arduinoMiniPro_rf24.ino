@@ -13,8 +13,9 @@ RF24Network network(radio24);
 /** RF24 IDs */
 const uint16_t pirNodeId = 01;
 const uint16_t serverNodeId = 00;
- 
+
 /** RF24 send scruct */
+/** RF24 receive scruct */
 struct payloadRF24Msg
 {
   char value;
@@ -29,7 +30,7 @@ const int inPirDigitalPIN = 4;
 const int outPirDigitalPIN = 5;
 
 /** Device id used in communication with serwer */
-char id = '0';
+char id = 0;
 
 /** Value read from the pir values = HIRH/LOW */
 int inPirSensorValue = 0;
@@ -68,21 +69,22 @@ void loop()
   /** Update network state every loop */
   network.update();
 
-  if(network.available()) 
+ /* if(network.available()) 
   {
     RF24NetworkHeader header;
     payloadRF24Msg message;
     network.read(header,&message,sizeof(message));
 
-    /** If someone sended 1 turn the light on and write broadcast `x`*/
+   
     if(message.id == id && message.type == 'g') 
     {
       sendhumanCounterThroughRF24();
     }
-    if(message.type == 'x') {
+    if(message.type == 'x' && id == '0') {
       id = message.id;
+      Serial.print("ID assigned! :");
     }
-  }
+  }*/
 
   /** Read PIR value every loop */
   inPirSensorValue = digitalRead(inPirDigitalPIN);
@@ -126,6 +128,10 @@ void loop()
 
 void sendValueThroughRF24(unsigned int val)
 {
+ /* if (id == '0') {
+    Serial.print("NO ID! :");
+    return;
+  }*/
   if (val == sendedValue)
     return;
   Serial.print("SENDING :");
