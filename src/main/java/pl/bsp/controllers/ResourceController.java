@@ -86,5 +86,15 @@ public class ResourceController {
 		else
 			return new ResponseEntity<>("{\"status\": \"" + result + "\"}",HttpStatus.NOT_FOUND);
 	}
+	
+	@RequestMapping(value = "/delete-resource/{username}/{serial_id}", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<String> deleteResource(@PathVariable("username") String userName,
+			@PathVariable("serial_id") String serialId) {
+		if (resServ.deleteResource(Integer.parseInt(serialId), userName))
+			return new ResponseEntity<>("{\"status\": \"deleted\"}",HttpStatus.OK);
+		else
+			return new ResponseEntity<>("{\"status\": \"error\"}",HttpStatus.NOT_FOUND);
+	}
 
 }

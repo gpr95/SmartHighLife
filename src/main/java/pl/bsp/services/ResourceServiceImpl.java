@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.jdo.annotations.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pl.bsp.entities.Resource;
 import pl.bsp.entities.ResourceType;
 import pl.bsp.model.ResourceDAO;
+import pl.bsp.model.ResourceRepository;
 import pl.bsp.model.User;
 import pl.bsp.model.UserRepository;
 
 @Service
+
 public class ResourceServiceImpl implements ResourceService{
 
 	@Autowired
@@ -24,6 +28,9 @@ public class ResourceServiceImpl implements ResourceService{
 	
 	@Autowired
 	UserServiceImpl userService;
+	
+	@Autowired
+	ResourceRepository resourceRepo2;
 	
 	@Override
 	public boolean addResource(Resource resourceToAdd) {
@@ -50,9 +57,28 @@ public class ResourceServiceImpl implements ResourceService{
 			return false;
 		}
 	}
+	
+	
 
 	@Override
 	public pl.bsp.model.Resource findByName(String name) {
 		return null;
+	}
+
+
+
+	@Override
+	@Transactional
+	public boolean deleteResource(int serialId, String ownerUsername) {
+		User owner = userRepo.findByUsername(ownerUsername);
+		pl.bsp.model.Resource resourceToDelete = resourceRepo2.findBySerialId(serialId);
+		boolean status = owner.getResources().remove(resourceToDelete);
+		userService.update(owner);
+		List<pl.bsp.model.Resource> deletedResources = resourceRepo2.deleteBySerialId(serialId);
+		if(status){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

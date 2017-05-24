@@ -1,4 +1,4 @@
-<div ng-controller="devicesCtrl as devicesCtrl" ng-cloak
+<div ng-controller="resourcesCtrl as resourcesCtrl" ng-cloak
 	class="ng-cloak">
 	<div class="jumbotron text-center">
 		<h1>Manage your resources!</h1>
@@ -40,6 +40,8 @@
 								<button class="btn btn-primary btn-xs "
 								ng-click="postOffValue(resource.serialId)"
 								ng-show="checkIfPost(resource.action)">TURN OFF</button>
+								<button class="btn btn-danger btn-xs "
+								ng-click="deleteResource(resource.serialId)">DELETE</button>
 						</td>
 					</tr>
 				</table>
