@@ -70,4 +70,15 @@ public class ParentalControlController {
         else
             return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
     }
+    
+    @RequestMapping(value = "/delete-policy/{username}/{serial_id}", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<String> deletePolicy(@PathVariable("username") String userName,
+			@PathVariable("serial_id") String policyId) {
+		if (policyService.deletePolicy(Integer.parseInt(policyId), userName))
+			return new ResponseEntity<>("{\"status\": \"deleted\"}",HttpStatus.OK);
+		else
+			return new ResponseEntity<>("{\"status\": \"error\"}",HttpStatus.NOT_FOUND);
+	}
+    
 }

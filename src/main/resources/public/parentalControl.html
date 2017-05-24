@@ -14,6 +14,8 @@
 			<div class="col-6 col-md-10">
 				<table ng-table="tableParams" class="table" >
 					<tr ng-repeat="policy in data">
+						<td title="'ID'"  sortable="'id'">{{policy.id}}
+						</td>
 						<td title="'Description'"  sortable="'description'">{{policy.description}}
 						</td>
 						<td title="'Resource name'"  sortable="'resourceName'">{{policy.resourceName}}
@@ -26,6 +28,8 @@
 							sortable="'endTime'">{{policy.endTime}}</td>
 						<td title="'Repeat pattern'"
 							sortable="'repeatPatern'">{{policy.repeatPatern}}</td>
+						<td title="'Delete policy'"><button class="btn btn-danger btn-xs "
+								ng-click="deletePolicy(policy.id)">DELETE</button></td>
 					</tr>
 				</table>
 			</div>

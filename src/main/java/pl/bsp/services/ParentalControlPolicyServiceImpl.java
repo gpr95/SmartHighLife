@@ -20,6 +20,9 @@ public class ParentalControlPolicyServiceImpl implements ParentalControlPolicySe
 
     @Autowired
     ParentalControlPolicyDAO parentalControlPolicyRepository;
+    
+    @Autowired
+    ParentalControlPolicyRepository parentalControlPolicyRepositoryInterface;
 
     @Override
     public boolean add(ParentalControlPolicy parentalControlPolicy) {
@@ -43,4 +46,18 @@ public class ParentalControlPolicyServiceImpl implements ParentalControlPolicySe
     public List<ParentalControlPolicy> findByUserId(long id) {
         return userService.findById(id).getPolicies();
     }
+
+	@Override
+	public boolean deletePolicy(int resourceId, String ownerUsername) {
+		User owner = userService.findByUsername(ownerUsername);
+		ParentalControlPolicy policyToDelete = parentalControlPolicyRepositoryInterface.findById(resourceId);
+		boolean status = owner.getPolicies().remove(policyToDelete);
+		userService.update(owner);
+		List<ParentalControlPolicy> deletedPolicies = parentalControlPolicyRepositoryInterface.deleteById((long)resourceId);
+		if(status){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

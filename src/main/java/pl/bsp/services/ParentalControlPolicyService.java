@@ -11,5 +11,6 @@ public interface ParentalControlPolicyService {
     boolean add(ParentalControlPolicy parentalControlPolicy);
     List<pl.bsp.model.ParentalControlPolicy> findByUsername(String username);
     List<pl.bsp.model.ParentalControlPolicy> findByUserId(long id);
+    public boolean deletePolicy(int resourceId, String ownerUsername);
 
 }

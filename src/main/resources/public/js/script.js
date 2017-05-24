@@ -183,6 +183,7 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 	$scope.numbers = ["0","1","2","3","4","5","6","7","8"];
 
 	$scope.submitPolicy = function(){
+		
 	
 	$scope.error1 = false;
 	$scope.error2 = false;
@@ -215,7 +216,14 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 
 }
 	
-	
+	$scope.deletePolicy = function(policy_id){
+		$http.get('/delete-policy/'+$window.localStorage.getItem("username")+'/'+ policy_id+'/').success(function(response) {
+			console.log(response.status);
+			init();
+		}).error(function(response) {
+			console.log(response.status);
+		});
+	}	
 	
 });
 
