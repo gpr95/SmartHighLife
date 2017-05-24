@@ -199,7 +199,7 @@ void loop() {
           if (longId > 65)
             writeThroughRF24(0, longId, 3);
           else
-            turnOnLight();
+            turnOffLight();
           writeThroughUDP('D');
           break;
         case 'f':
@@ -207,7 +207,7 @@ void loop() {
           if (longId > 65)
             writeThroughRF24(0, longId, 3);
           else
-            turnOnLight();
+            turnOffLight();
           writeThroughUDP('D');
           break;
         case 'G':
