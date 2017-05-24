@@ -71,7 +71,7 @@ public class ParentalControlController {
         if(policyService.add(policyDb))
             return new ResponseEntity<>("{\"status\": \"success\"}", HttpStatus.OK);
         else
-            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("{\"status\": \"error\"}", HttpStatus.BAD_REQUEST);
     }
     
     @RequestMapping(value = "/delete-policy/{username}/{serial_id}", method = RequestMethod.GET, produces = {

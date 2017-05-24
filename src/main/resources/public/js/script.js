@@ -200,18 +200,18 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 	
 	$scope.error1 = false;
 	$scope.error2 = false;
-	
+	var index = $scope.numbers.indexOf($scope.repeatPatern);
 	var policy = {
 			description:$scope.description,
 			resourceName:$scope.resourceName,
 			action:$scope.action,
 			startTime:$scope.startTime,
 			endTime:$scope.endTime,
-			repeatPatern:$scope.repeatPatern,
+			repeatPatern:index,
 			username:$window.localStorage.getItem("username")
 	}
 	
-	if(policy.description == "" || policy.resourceName == "" || policy.action == "", policy.startTime == "", policy.endTime =="" || policy.repeatPatern == "" || policy.username == ""){
+	if(policy.description == "" || policy.resourceName == "" || policy.action == "", policy.startTime == "", policy.endTime ==""  ){
 		$scope.error1 = true;
 	}else{
 		$http.post('/parentalPolicy', angular.toJson(policy), {

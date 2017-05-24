@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import pl.bsp.enums.RepeatPatern;
 import pl.bsp.model.ParentalControlPolicy;
 import pl.bsp.services.ArduinoService;
-import pl.bsp.services.ResourceService;
+import pl.bsp.services.ArduinoServiceImpl;
+import pl.bsp.services.ResourceServiceImpl;
 import pl.bsp.services.UserServiceImpl;
 
 /**
@@ -23,12 +25,13 @@ public class ParentalControlThread {
 	private final static String TURN_OFF = "turn off";
 	private final static String TURN_ON = "turn on";
     
-    
+    @Autowired
+    private ResourceServiceImpl resourceService;
     @Autowired
     private UserServiceImpl userService;
-    private ArduinoService arduinoService;
+    private ArduinoService arduinoService = new ArduinoServiceImpl();
     private String username;
-    private ResourceService resourceService;
+
     private PriorityBlockingQueue<Event> policyQueue;
     
     //przerobić to na kolejke eventow
