@@ -10,12 +10,11 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-import pl.bsp.model.User;
-
 public class ArduinoServiceImpl implements ArduinoService {
 
 	@Override
 	public String findArduinoInNetwork() {
+
 		String localhostPrefix = null;
 		int lastOcetet = 0;
 		Enumeration<?> interfaces = null;
@@ -54,12 +53,12 @@ public class ArduinoServiceImpl implements ArduinoService {
 		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
 		try {
-			serverSocket = new DatagramSocket(8888);
+			serverSocket = new DatagramSocket();
 			serverSocket.setSoTimeout(50);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
-		String valueToSend = "X";
+		String valueToSend = "XXX";
 		sendData = valueToSend.getBytes();
 
 		String received = null;
@@ -68,13 +67,21 @@ public class ArduinoServiceImpl implements ArduinoService {
 			try {
 				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
 						InetAddress.getByName(localhostPrefix + i), 8888);
+				Thread.sleep(30);
 				serverSocket.send(sendPacket);
+
 				serverSocket.receive(receivePacket);
+
 				received = new String(receivePacket.getData());
 				System.out.println(received);
-				arduinoIp = InetAddress.getByName(localhostPrefix + i);
+				System.out.println(receivePacket.getAddress());
+				System.out.println(receivePacket.getSocketAddress());
+				arduinoIp = receivePacket.getAddress();
+				break;
+			} catch (SocketTimeoutException e) {
 			} catch (UnknownHostException e) {
 			} catch (IOException e) {
+			} catch (InterruptedException e) {
 			}
 		}
 
@@ -83,43 +90,55 @@ public class ArduinoServiceImpl implements ArduinoService {
 				try {
 					DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length,
 							InetAddress.getByName(localhostPrefix + i), 8888);
+					Thread.sleep(30);
 					serverSocket.send(sendPacket);
+
 					serverSocket.receive(receivePacket);
 					received = new String(receivePacket.getData());
+
 					System.out.println(received);
-					arduinoIp = InetAddress.getByName(localhostPrefix + i);
+					System.out.println(receivePacket.getAddress());
+					System.out.println(receivePacket.getSocketAddress());
+					arduinoIp = receivePacket.getAddress();
+				} catch (SocketTimeoutException e) {
 				} catch (UnknownHostException e) {
 				} catch (IOException e) {
+				} catch (InterruptedException e) {
 				}
 			}
 
 		serverSocket.close();
+		
 		if (arduinoIp != null)
 			return arduinoIp.getHostAddress();
+		
 		return null;
 	}
 	
 	@Override
 	public void addNewResource(String arduinoIp, int resourceId) {
+		if(resourceId < 65)
+			return;
 		char id = (char) resourceId;
-		writeMsgToArduino("A" + id, arduinoIp);
+		writeMsgToArduino("A",id, arduinoIp);
 	}
 
 	@Override
 	public void turnOnTheLight(String arduinoIp, int resourceId) {
 		char id = (char) resourceId;
-		writeMsgToArduino("N" + id, arduinoIp);
+		writeMsgToArduino("N",id, arduinoIp);
 	}
 
 	@Override
 	public void turnOffTheLight(String arduinoIp, int resourceId) {
 		char id = (char) resourceId;
-		writeMsgToArduino("F" + id, arduinoIp);
+		writeMsgToArduino("F" ,id, arduinoIp);
 	}
 
 	@Override
 	public String getResourceValue(String arduinoIp, int resourceId) {
-		String returnedValue = writeSingleMsgToArduino("G" + resourceId, arduinoIp);
+		char id = (char) resourceId;
+		String returnedValue = writeMsgToArduino("G" , id, arduinoIp);
 		System.out.println(returnedValue);
 		if(returnedValue.startsWith("N"))
 			return "ON";
@@ -129,15 +148,17 @@ public class ArduinoServiceImpl implements ArduinoService {
 		
 	}
 
-	private String writeMsgToArduino(String msg, String arduinoIp) {
+	private String writeMsgToArduino(String header, char id, String arduinoIp) {
 		String received = null;
-		byte[] sendData = msg.getBytes();
+		String valueToSend = header + id;
+		byte[] sendData = valueToSend.getBytes();
 		byte[] receiveData = new byte[1024];
+		
 		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 		DatagramSocket serverSocket = null;
 		try {
-			serverSocket = new DatagramSocket(8888);
-			serverSocket.setSoTimeout(1000);
+			serverSocket = new DatagramSocket();
+			serverSocket.setSoTimeout(100);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -159,38 +180,6 @@ public class ArduinoServiceImpl implements ArduinoService {
 				e.printStackTrace();
 			}
 		} while (retransmit);
-
-		serverSocket.close();
-
-		return received;
-	}
-
-	private String writeSingleMsgToArduino(String msg, String arduinoIp) {
-		String received = null;
-		byte[] sendData = msg.getBytes();
-		byte[] receiveData = new byte[1024];
-		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-		DatagramSocket serverSocket = null;
-		try {
-			serverSocket = new DatagramSocket(8888);
-			serverSocket.setSoTimeout(1000);
-		} catch (SocketException e) {
-			e.printStackTrace();
-		}
-		try {
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(arduinoIp),
-					8888);
-			serverSocket.send(sendPacket);
-			serverSocket.receive(receivePacket);
-			received = new String(receivePacket.getData());
-			System.out.println(received);
-		} catch (SocketTimeoutException e) {
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		serverSocket.close();
 
 		return received;

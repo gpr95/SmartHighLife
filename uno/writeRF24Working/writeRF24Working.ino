@@ -45,6 +45,7 @@ EthernetUDP Udp;
 byte mac[] = { 0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02 };
 unsigned int localPort = 8888;
 
+int remoteNotificationPort;
 IPAddress remoteIp;
 int remotePort;
 
@@ -61,7 +62,7 @@ void setup(void)
   Ethernet.begin(mac);
   Udp.begin(localPort);
 
-   /** Relay output */
+  /** Relay output */
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
 
@@ -108,6 +109,17 @@ void loop() {
         Serial.println(payload.type);
         if (payload.type == 4)
           receivedAck = true;
+        if (payload.type == 1) {
+          if (payload.value == 1)
+            writeThroughUDP('N');
+          else if (payload.value == 0)
+            writeThroughUDP('F');
+          else {
+            writeThroughUDP(payload.value);
+          }
+          receivedAck = true;
+        }
+
       }
 
       delay(50);
@@ -115,158 +127,184 @@ void loop() {
     needToSendRF = false;
   }
 
+  if ( network.available() ) {
+    RF24NetworkHeader header;        // If so, grab it and print it out
+    payload_t payload;
+    network.read(header, &payload, sizeof(payload));
+    Serial.print("Received packet #");
+    Serial.print(payload.id);
+    Serial.print(" at ");
+    Serial.print(payload.value);
+    Serial.print(" with type ");
+    Serial.println(payload.type);
+    if (payload.type == 2) {
+      char message[3];
+      message[0] = 'T';
+      message[1] = (char) payload.id;
+      message[2] = (char) payload.value;
+      for(int i =0 ; i<3; i++)
+        Serial.print(message[i]);
+      Udp.beginPacket(remoteIp, remoteNotificationPort);
+      Udp.write(message,3);
+      Udp.endPacket();
+    }
+  }
 
-  /** WAIT FOR RASPBERRY TO PING */
-  int packetSize = Udp.parsePacket();
-  if (packetSize) {
-    char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
-    remoteIp = Udp.remoteIP();
-    remotePort = Udp.remotePort();
-    /** Read the packet into packetBufffer */
-    Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
-    for (int i = 0; i < packetSize; i++) {
-      Serial.print(packetBuffer[i]);
+
+
+    /** WAIT FOR RASPBERRY TO PING */
+    int packetSize = Udp.parsePacket();
+    if (packetSize) {
+      char packetBuffer[UDP_TX_PACKET_MAX_SIZE];
+      remoteIp = Udp.remoteIP();
+      remotePort = Udp.remotePort();
+      /** Read the packet into packetBufffer */
+      Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
+      for (int i = 0; i < packetSize; i++) {
+        Serial.print(packetBuffer[i]);
+      }
+      Serial.println(" ");
+      unsigned int longId;
+      switch (packetBuffer[0]) {
+        case 'X':
+          initializeRemoteIp();
+          break;
+        case 'x':
+          initializeRemoteIp();
+          break;
+        case 'A':
+          addResource(packetBuffer, packetSize);
+          break;
+        case 'a':
+          addResource(packetBuffer, packetSize);
+          break;
+        case 'N':
+          longId = packetBuffer[1];
+          if (longId > 65)
+            writeThroughRF24(1, longId, 3);
+          else
+            turnOnLight();
+          writeThroughUDP('D');
+          break;
+        case 'n':
+          longId = packetBuffer[1];
+          if (longId > 65)
+            writeThroughRF24(1, longId, 3);
+          else
+            turnOnLight();
+          writeThroughUDP('D');
+          break;
+        case 'F':
+          longId = packetBuffer[1];
+          if (longId > 65)
+            writeThroughRF24(0, longId, 3);
+          else
+            turnOnLight();
+          writeThroughUDP('D');
+          break;
+        case 'f':
+          longId = packetBuffer[1];
+          if (longId > 65)
+            writeThroughRF24(0, longId, 3);
+          else
+            turnOnLight();
+          writeThroughUDP('D');
+          break;
+        case 'G':
+          getResource(packetBuffer, packetSize);
+          break;
+        case 'g':
+          getResource(packetBuffer, packetSize);
+          break;
+        case 'T':
+          remoteNotificationPort = Udp.remotePort();
+          break;
+      }
+
+    }
+  }
+
+  void initializeRemoteIp() {
+    //remoteIp = Udp.remoteIP();
+    //remotePort = Udp.remotePort();
+    Serial.print("RASPBERRY IP:");
+    for (int i = 0; i < 4; i++) {
+      Serial.print(remoteIp[i], DEC);
+      if (i < 3) {
+        Serial.print(".");
+      }
     }
     Serial.println(" ");
-  unsigned int longId;
-    switch (packetBuffer[0]) {
-      case 'X':
-        initializeRemoteIp();
-        break;
-      case 'x':
-        initializeRemoteIp();
-        break;
-      case 'A':
-        addResource(packetBuffer, packetSize);
-        break;
-      case 'a':
-        addResource(packetBuffer, packetSize);
-        break;
-      case 'N':
-        longId = packetBuffer[1];
-        if(longId > 65)
-           writeThroughRF24(1,longId,3);
-        else
-          turnOnLight();
-        writeThroughUDP('D');
-        break;
-      case 'n':
-        longId = packetBuffer[1];
-        if(longId > 65)
-           writeThroughRF24(1,longId,3);
-        else
-          turnOnLight();
-        writeThroughUDP('D');
-        break;
-      case 'F':
-        longId = packetBuffer[1];
-        if(longId > 65)
-           writeThroughRF24(0,longId,3);
-        else
-          turnOnLight();
-        writeThroughUDP('D');
-        break;
-      case 'f':
-        longId = packetBuffer[1];
-        if(longId > 65)
-           writeThroughRF24(0,longId,3);
-        else
-          turnOnLight();
-        writeThroughUDP('D');
-        break;
-      case 'G':
-        getResource(packetBuffer, packetSize);
-        break;
-      case 'g':
-        getResource(packetBuffer, packetSize);
-        break;
-
-    }
-
+    writeThroughUDP('D');
   }
-}
 
-void initializeRemoteIp() {
-  //remoteIp = Udp.remoteIP();
-  //remotePort = Udp.remotePort();
-  Serial.print("RASPBERRY IP:");
-  for (int i = 0; i < 4; i++) {
-    Serial.print(remoteIp[i], DEC);
-    if (i < 3) {
-      Serial.print(".");
+  void addResource(char serverMsg[], int serverMsgSize) {
+    Serial.println(" ");
+    char id =  serverMsg[1];
+    unsigned long idLong = id;
+    Serial.print(id);
+    writeThroughUDP('D');
+    writeThroughRF24(48, idLong, 5);
+  }
+
+  void getResource(char serverMsg[], int serverMsgSize) {
+    Serial.println(" ");
+    char id =  serverMsg[1];
+    Serial.print(id);
+    unsigned long idLong = id;
+    if (idLong > 65) {
+      writeThroughRF24(48, idLong, 0);
+    }
+    else {
+      if (lightIsTurnedOn)
+        writeThroughUDP('N');
+      else
+        writeThroughUDP('F');
     }
   }
-  Serial.println(" ");
-  writeThroughUDP('D');
-}
 
-void addResource(char serverMsg[], int serverMsgSize) {
-  Serial.println(" ");
-  char id =  serverMsg[1];
-  unsigned long idLong = id;
-  Serial.print(id);
-  writeThroughUDP('D');
-  writeThroughRF24(48, idLong, 5);
-}
-
-void getResource(char serverMsg[], int serverMsgSize) {
-  Serial.println(" ");
-  char id =  serverMsg[1];
-  Serial.print(id);
-  unsigned long idLong = id;
-  if (idLong < 100) {
-    writeThroughRF24(48, idLong, 48);
+  void writeThroughUDP(unsigned char msg)
+  {
+    Udp.beginPacket(remoteIp, remotePort);
+    Udp.write(msg);
+    Udp.endPacket();
   }
-  //  else {
-  //    if (lightIsTurnedOn)
-  //      writeThroughUDP('N');
-  //    else
-  //      writeThroughUDP('F');
-  //  }
-}
-
-void writeThroughUDP(unsigned char msg)
-{
-  Udp.beginPacket(remoteIp, remotePort);
-  Udp.write(msg);
-  Udp.endPacket();
-}
 
 
-void writeThroughRF24(unsigned long value, unsigned long id, unsigned long type)
-{
-  globalValue = value;
-  globalId = id;
-  globalType = type;
-  needToSendRF = true;
-}
+  void writeThroughRF24(unsigned long value, unsigned long id, unsigned long type)
+  {
+    globalValue = value;
+    globalId = id;
+    globalType = type;
+    needToSendRF = true;
+  }
 
 
-void turnOnLight()
-{
-  if (lightIsTurnedOn)
-    return;
+  void turnOnLight()
+  {
+    if (lightIsTurnedOn)
+      return;
 
-  /** Turn on relay-1 - for 0.5s */
-  digitalWrite(8, LOW);
-  delay(500);
-  digitalWrite(8, HIGH);
+    /** Turn on relay-1 - for 0.5s */
+    digitalWrite(8, LOW);
+    delay(500);
+    digitalWrite(8, HIGH);
 
-  lightIsTurnedOn = true;
-  Serial.println("Light ON");
-}
+    lightIsTurnedOn = true;
+    Serial.println("Light ON");
+  }
 
-void turnOffLight()
-{
-  if (!lightIsTurnedOn)
-    return;
-  /** Turn on relay-2 - for 0.5s */
-  digitalWrite(9, LOW);
-  delay(500);
-  digitalWrite(9, HIGH);
+  void turnOffLight()
+  {
+    if (!lightIsTurnedOn)
+      return;
+    /** Turn on relay-2 - for 0.5s */
+    digitalWrite(9, LOW);
+    delay(500);
+    digitalWrite(9, HIGH);
 
-  lightIsTurnedOn = false;
-  Serial.println("Light OFF");
-}
+    lightIsTurnedOn = false;
+    Serial.println("Light OFF");
+  }
 
 
