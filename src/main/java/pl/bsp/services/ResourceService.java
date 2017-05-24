@@ -7,6 +7,7 @@ public interface ResourceService {
 	
 	public boolean addResource(Resource resourceToAdd);
 	pl.bsp.model.Resource findBySerialIdAndUser(int serialId, User user);
+	pl.bsp.model.Resource findByNameAndUser(String name, User user);
 	public boolean deleteResource(int resourceId, String ownerUsername);
 
     boolean syncResource(int serialId, String userName);

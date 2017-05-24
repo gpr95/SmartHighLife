@@ -12,4 +12,5 @@ public interface ResourceRepository extends JpaRepository<Resource, Long>{
     Resource findBySerialIdAndUser(int serialId, User user);
     
     List<Resource> deleteBySerialIdAndUser(int serialId, User user);
+    Resource findByNameAndUser(String name, User user);
 }

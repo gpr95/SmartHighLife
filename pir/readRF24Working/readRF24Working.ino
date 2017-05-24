@@ -91,12 +91,14 @@ void loop(void) {
       sendhumanCounterThroughRF24();
     } else if (payload.type == 3 && id == payload.id) {
       humanCounter = payload.value;
+      sendAck(id);
     }
   }
   /** Read PIR value every loop */
   inPirSensorValue = digitalRead(inPirDigitalPIN);
   outPirSensorValue = digitalRead(outPirDigitalPIN);
 
+ 
   if (inPirSensorOldValue == LOW && inPirSensorValue == HIGH && outPirSensorOldValue == LOW && outPirSensorValue == LOW) //wchodzi
     // sendValueThroughRF24(0);
     state = 1;
@@ -109,10 +111,39 @@ void loop(void) {
   else if (inPirSensorOldValue == LOW && inPirSensorValue == LOW && outPirSensorOldValue == HIGH && outPirSensorValue == HIGH) //wychodzi
     //  sendValueThroughRF24(1);
     state = 2;
-  else if (inPirSensorOldValue == HIGH && outPirSensorOldValue == LOW && outPirSensorValue == HIGH && state == 1) //wszedl
+  else if (inPirSensorOldValue == HIGH && outPirSensorOldValue == LOW && outPirSensorValue == HIGH && state == 1){ //wszedl
     sendValueThroughRF24(1);
-  else if (inPirSensorOldValue == LOW && inPirSensorValue == HIGH && outPirSensorOldValue == HIGH && state == 2) //wyszedl
+    Serial.print("oldIN : ");
+    Serial.print(inPirSensorOldValue);
+    Serial.print(" IN: ");
+    Serial.print(inPirSensorValue);
+    Serial.print(" oldOUT: ");
+    Serial.print(outPirSensorOldValue);
+    Serial.print(" OUT: ");
+    Serial.print(outPirSensorValue);
+    Serial.print(" STATE: ");
+    Serial.print(state);
+    Serial.print(" humanCounter: ");
+    Serial.print(humanCounter);
+    Serial.println("");
+    Serial.println("");
+  }
+  else if (inPirSensorOldValue == LOW && inPirSensorValue == HIGH && outPirSensorOldValue == HIGH && state == 2){ //wyszedl
     sendValueThroughRF24(0);
+    Serial.print("oldIN : ");
+    Serial.print(inPirSensorOldValue);
+    Serial.print(" IN: ");
+    Serial.print(inPirSensorValue);
+    Serial.print(" oldOUT: ");
+    Serial.print(outPirSensorOldValue);
+    Serial.print(" OUT: ");
+    Serial.print(outPirSensorValue);
+    Serial.print(" STATE: ");
+    Serial.print(state);
+     Serial.print(" humanCounter: ");
+    Serial.print(humanCounter);
+    Serial.println("");
+  }
   else
     state = 0;
 

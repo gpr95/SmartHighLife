@@ -60,20 +60,20 @@ public class ParentalControlThread {
         synchronized (policyQueue) {
             policyQueue.add(
                     new Event(startDate.getTime(),
-                            resourceService.findByName(policy.getResourceName()).getId(),
+                            resourceService.findByNameAndUser(policy.getResourceName(), policy.getUser()).getId(),
                             policy.getAction(), RepeatPatern.values()[policy.getRepeatPatern()],
                             userService.findByUsername(policy.getUser().getUsername()).getIpAddress())
             );
             if(startDate != endDate) {
                 if (policy.getAction().equals("turn on")) {
                     policyQueue.add(new Event(startDate.getTime(),
-                            resourceService.findByName(policy.getResourceName()).getId(),
+                            resourceService.findByNameAndUser(policy.getResourceName(), policy.getUser()).getId(),
                             TURN_OFF, RepeatPatern.values()[policy.getRepeatPatern()],
                             userService.findByUsername(policy.getUser().getUsername()).getIpAddress())
                     );
                 } else {
                     policyQueue.add(new Event(startDate.getTime(),
-                            resourceService.findByName(policy.getResourceName()).getId(),
+                            resourceService.findByNameAndUser(policy.getResourceName(), policy.getUser()).getId(),
                             TURN_ON,RepeatPatern.values()[policy.getRepeatPatern()],
                             userService.findByUsername(policy.getUser().getUsername()).getIpAddress())
                     );

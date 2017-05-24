@@ -69,6 +69,10 @@ public class ResourceServiceImpl implements ResourceService{
 		return resourceRepo2.findBySerialIdAndUser(serialId, user);
 	}
 
+	@Override
+	public pl.bsp.model.Resource findByNameAndUser(String name, User user) {
+		return resourceRepo2.findByNameAndUser(name, user);
+	}
 
 
 	@Override
@@ -91,4 +95,6 @@ public class ResourceServiceImpl implements ResourceService{
 		arduinoService.syncHumanCounter(userService.findByUsername(userName).getIpAddress(), serialId);
 		return false;
 	}
+
+
 }
