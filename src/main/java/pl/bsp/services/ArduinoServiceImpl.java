@@ -124,6 +124,11 @@ public class ArduinoServiceImpl implements ArduinoService {
 	}
 
 	@Override
+	public void syncHumanCounter(String arduinoIp, int resourceId) {
+		writeMsgToArduino("O", (char) resourceId, arduinoIp);
+	}
+
+	@Override
 	public void turnOnTheLight(String arduinoIp, int resourceId) {
 		char id = (char) resourceId;
 		writeMsgToArduino("N",id, arduinoIp);

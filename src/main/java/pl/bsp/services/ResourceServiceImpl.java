@@ -30,6 +30,9 @@ public class ResourceServiceImpl implements ResourceService{
 	UserServiceImpl userService;
 	
 	@Autowired
+	ArduinoService arduinoService;
+
+	@Autowired
 	ResourceRepository resourceRepo2;
 	
 	@Override
@@ -83,5 +86,11 @@ public class ResourceServiceImpl implements ResourceService{
 		}else{
 			return false;
 		}
+	}
+
+	@Override
+	public boolean syncResource(int serialId, String userName) {
+		arduinoService.syncHumanCounter(userService.findByUsername(userName).getIpAddress(), serialId);
+		return false;
 	}
 }

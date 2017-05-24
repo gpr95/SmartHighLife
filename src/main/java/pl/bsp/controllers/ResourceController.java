@@ -111,4 +111,13 @@ public class ResourceController {
 			return new ResponseEntity<>("{\"status\": \"error\"}",HttpStatus.NOT_FOUND);
 	}
 
+	@RequestMapping(value = "/synchronize/{username}/{serial_id}", method = RequestMethod.GET, produces = {
+			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<String> zeroesResource(@PathVariable("username") String userName,
+												 @PathVariable("serial_id") String serialId) {
+		if (resServ.syncResource(Integer.parseInt(serialId), userName))
+			return new ResponseEntity<>("{\"status\": \"deleted\"}",HttpStatus.OK);
+		else
+			return new ResponseEntity<>("{\"status\": \"error\"}",HttpStatus.NOT_FOUND);
+	}
 }
