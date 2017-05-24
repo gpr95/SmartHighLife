@@ -17,6 +17,8 @@ import pl.bsp.services.ArduinoServiceImpl;
 import pl.bsp.services.ResourceServiceImpl;
 import pl.bsp.services.UserServiceImpl;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by Kamil on 2017-05-22.
  */
@@ -49,7 +51,7 @@ public class ParentalControlThread {
     }
 
     public void addPolicy(ParentalControlPolicy policy) {
-
+        System.out.println("add policy " + policy.getDescription());
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date startDate = null;
         java.util.Date endDate = null;
@@ -96,44 +98,51 @@ public class ParentalControlThread {
     public class QueueCheckingThread implements Runnable {
 
         public void run() {
-            synchronized (policyQueue) {
-                if ((policyQueue.peek().getTime() - new Date().getTime()) < 1000) {
-                	Event event = policyQueue.poll();
-                	if(event.getAction().equals(TURN_ON)) {
-                        arduinoService.turnOnTheLight(event.getArduinoIp(), (int) event.getResourceId());
-                	} else if (event.getAction().equals(TURN_OFF)) {
-                		arduinoService.turnOffTheLight(event.getArduinoIp(), (int) event.getResourceId());
-                	}
-                    /**TODO: wysyłanie odpowiedniego żądania do arduino uno
-                     * resource id jest w evencie
-                     * akcja ( wlaczenie/wylaczenie zasobu) jest zdefiniowane w polu action
-                     * KAMIL ZROBI: jesli repeatAction nie once to ponownie dodac event do kolejki ze zwiekszonym czasem
-                     *
-                     * */
-
-                    if(event.getRepeatPatern() != RepeatPatern.ONCE) {
-                        switch (event.getRepeatPatern()) {
-                            case EVERY_MILISECOND:
-                                event.setTime(event.getTime() + 1);
-                                break;
-                            case EVERY_SECOND:
-                                event.setTime(event.getTime() + 1000);
-                                break;
-                            case EVERY_MINUTE:
-                                event.setTime(event.getTime() + 60 * 1000);
-                                break;
-                            case DAILY:
-                                event.setTime(event.getTime() + 3600 * 1000);
-                                break;
-                            case WEEKLY:
-                                event.setTime(event.getTime() + 7 * 3600 * 1000);
-                                break;
-                            case MONTHLY:
-                                event.setTime(event.getTime() + 30 * 7 * 3600 * 1000);
-                                break;
+            while (true) {
+                synchronized (policyQueue) {
+                    if ( abs(policyQueue.peek().getTime() - new Date().getTime()) < 1000) {
+                        Event event = policyQueue.poll();
+                        if (event.getAction().equals(TURN_ON)) {
+                            arduinoService.turnOnTheLight(event.getArduinoIp(), (int) event.getResourceId());
+                        } else if (event.getAction().equals(TURN_OFF)) {
+                            arduinoService.turnOffTheLight(event.getArduinoIp(), (int) event.getResourceId());
                         }
-                        policyQueue.add(event);
+                        /**TODO: wysyłanie odpowiedniego żądania do arduino uno
+                         * resource id jest w evencie
+                         * akcja ( wlaczenie/wylaczenie zasobu) jest zdefiniowane w polu action
+                         * KAMIL ZROBI: jesli repeatAction nie once to ponownie dodac event do kolejki ze zwiekszonym czasem
+                         *
+                         * */
+
+                        if (event.getRepeatPatern() != RepeatPatern.ONCE) {
+                            switch (event.getRepeatPatern()) {
+                                case EVERY_MILISECOND:
+                                    event.setTime(event.getTime() + 1);
+                                    break;
+                                case EVERY_SECOND:
+                                    event.setTime(event.getTime() + 1000);
+                                    break;
+                                case EVERY_MINUTE:
+                                    event.setTime(event.getTime() + 60 * 1000);
+                                    break;
+                                case DAILY:
+                                    event.setTime(event.getTime() + 3600 * 1000);
+                                    break;
+                                case WEEKLY:
+                                    event.setTime(event.getTime() + 7 * 3600 * 1000);
+                                    break;
+                                case MONTHLY:
+                                    event.setTime(event.getTime() + 30 * 7 * 3600 * 1000);
+                                    break;
+                            }
+                            policyQueue.add(event);
+                        }
                     }
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
