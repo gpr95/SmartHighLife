@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.bsp.arduino.ParentalControlThread;
 import pl.bsp.entities.Resource;
 import pl.bsp.enums.RepeatPatern;
 import pl.bsp.model.ParentalControlPolicy;
@@ -26,6 +27,8 @@ public class ParentalControlController {
 
     @Autowired
     ParentalControlPolicyService policyService;
+
+
 
     @RequestMapping(value="/parentalPolicies/{username}", method = RequestMethod.GET, produces =
             { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE } )

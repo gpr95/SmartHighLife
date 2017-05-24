@@ -50,7 +50,7 @@ int outPirSensorOldValue = 0;
     2 - wychodzi
 */
 int state = 0;
-int humanCounter =0;
+unsigned int humanCounter =0;
 
 /** Bool for discriminate whether high value was sended */
 bool highValueWasSended = false;
@@ -89,6 +89,8 @@ void loop(void) {
       sendAck(id);
     } else if (payload.type == 0 && id == payload.id) {
       sendhumanCounterThroughRF24();
+    } else if (payload.type == 3 && id == payload.id) {
+      humanCounter = payload.value;
     }
   }
   /** Read PIR value every loop */
@@ -137,7 +139,8 @@ void sendValueThroughRF24(unsigned int val)
   }
   if (val == 0) {
     Serial.println("wyszedl");
-    humanCounter--;
+    if(humanCounter > 0)  
+      humanCounter--;
   }
   int result = 0;
   if (humanCounter > 0) {

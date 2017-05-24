@@ -25,8 +25,7 @@ import pl.bsp.services.UserServiceImpl;
 
 @RestController
 public class UserController {
-	Map<String,Integer> activeMap = new HashMap<>();
-	
+
 	@Autowired
 	UserServiceImpl userService;
 	
@@ -45,14 +44,6 @@ public class UserController {
 
 	@RequestMapping("/user")
 	public Principal user(Principal user) {
-		if(activeMap.containsKey(user.getName())) {
-			return user;
-		}
-		pl.bsp.model.User userModel = userService.findByUsername(user.getName());
-		String arduinoAddress = userModel.getIpAddress();
-		Thread thread = new Thread(new ObserveMotion(arduinoAddress, user.getName()));
-		thread.start();
-		activeMap.put(user.getName(), 1);
 		return user;
 	}
 
@@ -61,6 +52,8 @@ public class UserController {
 	public ResponseEntity<String> register(@RequestBody User user) {
 		if(user.getPassword().equals(user.getConfirm_password())){
 			userService.save(user);
+			Thread thread = new Thread(new ObserveMotion(user.getIp_address(), user.getUsername()));
+			thread.start();
 			return new ResponseEntity<String>("{\"status\": \""+user.getUsername()+"\"}", HttpStatus.OK);
 		}else{
 			return new ResponseEntity<String>("{\"status\": \"PASSWORD_NOT_MATCH\"}", HttpStatus.CONFLICT);

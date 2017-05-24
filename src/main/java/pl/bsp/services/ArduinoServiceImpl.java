@@ -140,6 +140,7 @@ public class ArduinoServiceImpl implements ArduinoService {
 		char id = (char) resourceId;
 		String returnedValue = writeMsgToArduino("G" , id, arduinoIp);
 		System.out.println(returnedValue);
+		returnedValue = returnedValue.replaceAll("[^\\d.]", "");
 		if(returnedValue.startsWith("N"))
 			return "ON";
 		if(returnedValue.startsWith("F"))
