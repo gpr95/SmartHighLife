@@ -58,17 +58,25 @@ void loop(void) {
     Serial.print(" value ");
     Serial.print(payload.value);
     Serial.print(" type ");
-    Serial.println(payload.value);
-    if (payload.id == 2) {
-      Serial.print("Sending...");
-      payload_t payload = { 20, 2, 888 };
-      RF24NetworkHeader header(/*to node*/ other_node);
-      bool ok = network.write(header, &payload, sizeof(payload));
-      if (ok)
-        Serial.println("ok.");
-      else
-        Serial.println("failed.");
-    }
+    Serial.println(payload.type);
+    Serial.print(" my id ");
+    Serial.println(id);
+    if (payload.type == 5 && id == 0) {
+      id = payload.id;
+      sendAck(id);
+    } 
   }
+}
+
+void sendAck(unsigned long value)
+{
+  Serial.print("Sending ACK...");
+  payload_t payload = { value, id, 4 };
+  RF24NetworkHeader header(/*to node*/ other_node);
+  bool ok = network.write(header, &payload, sizeof(payload));
+  if (ok)
+    Serial.println("ok.");
+  else
+    Serial.println("failed.");
 }
 
