@@ -52,13 +52,15 @@ void loop(void){
     RF24NetworkHeader header;        // If so, grab it and print it out
     payload_t payload;
     network.read(header,&payload,sizeof(payload));
-    Serial.print("Received packet #");
+    Serial.print("Received packet id");
     Serial.print(payload.id);
-    Serial.print(" at ");
+    Serial.print(" value ");
+    Serial.print(payload.value);
+    Serial.print(" type ");
     Serial.println(payload.value);
     if (payload.id == 2) {
       Serial.print("Sending...");
-      payload_t payload = { 20, 2 };
+      payload_t payload = { 20, 2, 888 };
       RF24NetworkHeader header(/*to node*/ other_node);
       bool ok = network.write(header,&payload,sizeof(payload));
       if (ok)
