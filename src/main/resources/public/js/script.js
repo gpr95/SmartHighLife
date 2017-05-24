@@ -157,6 +157,19 @@ $scope.postOffValue = function(serial_id){
 		else
 			return false;
 	}
+	
+	$scope.synchronize = function(serial_id){
+		 $http.get('/synchronize/'+$window.localStorage.getItem("username")+'/'+ serial_id, {
+				headers : {
+					"content-type" : "application/json",
+					'Accept' : 'application/json'
+				}
+			}).success(function(response) {
+				console.log(response.status);
+			}).error(function(response) {
+				console.log(response.status);
+			});
+	}
 
 });
 

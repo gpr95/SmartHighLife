@@ -35,6 +35,9 @@
 								ng-click="getValue(resource.serialId)" data-toggle="modal"
 								data-target="#rowModal">VALUE</button>
 							<button class="btn btn-primary btn-xs "
+								ng-click="synchronize(resource.serialId)"
+								ng-show="!checkIfPost(resource.action)">SYNCHRONIZE</button>
+							<button class="btn btn-primary btn-xs "
 								ng-click="postOnValue(resource.serialId)"
 								ng-show="checkIfPost(resource.action,ON)">TURN ON</button>
 								<button class="btn btn-primary btn-xs "
