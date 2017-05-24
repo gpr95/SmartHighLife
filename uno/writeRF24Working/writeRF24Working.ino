@@ -114,8 +114,8 @@ void loop() {
           char two = (payload.value / 10 ) + '0';
           if (two > '0') {
             char table[2];
-            table[0] = one;
-            table[1] = two;
+            table[0] = two;
+            table[1] = one;
             Udp.beginPacket(remoteIp, remotePort);
             Udp.write(table, 2);
             Udp.endPacket();
@@ -172,19 +172,13 @@ void loop() {
     Serial.println(" ");
     unsigned int longId;
     switch (packetBuffer[0]) {
-      case 'X':
+      case 'X': // INITIALIZATION RASPBERRY IP GET
         initializeRemoteIp();
         break;
-      case 'x':
-        initializeRemoteIp();
-        break;
-      case 'A':
+      case 'A': // ADDING NEW RESOURCE 
         addResource(packetBuffer, packetSize);
         break;
-      case 'a':
-        addResource(packetBuffer, packetSize);
-        break;
-      case 'N':
+      case 'N': // TURN ON RESOURCE
         longId = packetBuffer[1];
         if (longId > 65)
           writeThroughRF24(1, longId, 3);
@@ -192,15 +186,7 @@ void loop() {
           turnOnLight();
         writeThroughUDP('D');
         break;
-      case 'n':
-        longId = packetBuffer[1];
-        if (longId > 65)
-          writeThroughRF24(1, longId, 3);
-        else
-          turnOnLight();
-        writeThroughUDP('D');
-        break;
-      case 'F':
+      case 'F': // TURN OFF RESOURCE
         longId = packetBuffer[1];
         if (longId > 65)
           writeThroughRF24(0, longId, 3);
@@ -208,23 +194,15 @@ void loop() {
           turnOffLight();
         writeThroughUDP('D');
         break;
-      case 'f':
-        longId = packetBuffer[1];
-        if (longId > 65)
-          writeThroughRF24(0, longId, 3);
-        else
-          turnOffLight();
-        writeThroughUDP('D');
-        break;
-      case 'G':
+      case 'G': // GET RESOURCE VALUE
         getResource(packetBuffer, packetSize);
         break;
-      case 'g':
-        getResource(packetBuffer, packetSize);
-        break;
-      case 'T':
+      case 'T': // NOTIFICATION RASPBERRY PORT UDP GET
         remoteNotificationPort = Udp.remotePort();
         break;
+      case 'O': // ZEROS PIR
+        longId = packetBuffer[1];
+        writeThroughRF24(0, longId, 3);
     }
 
   }

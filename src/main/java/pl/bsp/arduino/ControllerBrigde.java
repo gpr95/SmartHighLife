@@ -1,14 +1,10 @@
 package pl.bsp.arduino;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import pl.bsp.model.ParentalControlPolicy;
-import pl.bsp.model.Resource;
-import pl.bsp.services.UserService;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import pl.bsp.entities.Resource;
+import pl.bsp.model.ParentalControlPolicy;
 
 /**
  * Created by Kamil on 24.05.2017.
@@ -44,11 +40,11 @@ public class ControllerBrigde {
 
     public static void addResource(Resource resource, String ipAddress) {
         if(resource.getResourceType().equals("Sensor")) {
-            addObserveMotion(resource.getName(), resource.getUser().getUsername(),
+            addObserveMotion(resource.getName(), resource.getUsername(),
                    ipAddress);
         } else {
             for (Map.Entry<String, ObserveMotion> entry : observeMotionMap.entrySet()) {
-                if (entry.getValue().getUserName().equals(resource.getUser().getUsername())) {
+                if (entry.getValue().getUserName().equals( resource.getUsername())) {
                     entry.getValue().addResource(resource);
                 }
             }

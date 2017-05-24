@@ -52,8 +52,6 @@ public class UserController {
 	public ResponseEntity<String> register(@RequestBody User user) {
 		if(user.getPassword().equals(user.getConfirm_password())){
 			userService.save(user);
-			Thread thread = new Thread(new ObserveMotion(user.getIp_address(), user.getUsername()));
-			thread.start();
 			return new ResponseEntity<String>("{\"status\": \""+user.getUsername()+"\"}", HttpStatus.OK);
 		}else{
 			return new ResponseEntity<String>("{\"status\": \"PASSWORD_NOT_MATCH\"}", HttpStatus.CONFLICT);
