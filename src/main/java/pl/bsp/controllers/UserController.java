@@ -20,6 +20,7 @@ import pl.bsp.arduino.ObserveMotion;
 import pl.bsp.entities.User;
 import pl.bsp.services.ArduinoService;
 import pl.bsp.services.ArduinoServiceImpl;
+import pl.bsp.services.ResourceServiceImpl;
 import pl.bsp.services.UserServiceImpl;
 
 @RestController
@@ -28,6 +29,10 @@ public class UserController {
 	
 	@Autowired
 	UserServiceImpl userService;
+	
+	@Autowired
+	ResourceServiceImpl resServ;
+
 	ArduinoService ardServ = new ArduinoServiceImpl();
 	
 	@RequestMapping(value = "/login-post", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE,
@@ -43,7 +48,8 @@ public class UserController {
 		if(activeMap.containsKey(user.getName())) {
 			return user;
 		}
-		String arduinoAddress = ardServ.findArduinoInNetwork();
+		pl.bsp.model.User userModel = userService.findByUsername(user.getName());
+		String arduinoAddress = userModel.getIpAddress();
 		Thread thread = new Thread(new ObserveMotion(arduinoAddress, user.getName()));
 		thread.start();
 		activeMap.put(user.getName(), 1);
