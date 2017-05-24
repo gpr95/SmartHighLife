@@ -4,9 +4,9 @@ app
 			$routeProvider.when("/", {
 				templateUrl : "home.html",
 				controller : "homeCtrl"
-			}).when("/devices", {
-				templateUrl : "devices.html",
-				controller : "devicesCtrl"
+			}).when("/resources", {
+				templateUrl : "resources.html",
+				controller : "resourcesCtrl"
 			}).when("/contact", {
 				templateUrl : "contact.html",
 				controller : "contactCtrl"
@@ -30,8 +30,20 @@ app.controller("homeCtrl", function($window) {
 	
 });
 
-app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $location) {
+app.controller("resourcesCtrl", function($scope, $http, $window, NgTableParams, $location) {
 	
+	var init = function () {
+		$http.get('/resources/'+$window.localStorage.getItem("username")).success(function(data) {
+			$scope.data = data;
+			console.log(data);
+			$scope.tableParams = new NgTableParams({}, {
+				dataset : data
+			});
+		}).error(function(data) {
+			$scope.error = true;
+		});
+		};
+		init();
 	
 	$scope.types = ["Sensor", "Active object"];
 	
@@ -67,6 +79,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 				}
 			}).success(function() {
 				console.log("Resource added");
+				init();
 				$("[data-dismiss=modal]").trigger({ type: "click" });
 			}).error(function(response) {
 				$scope.error2 = true;
@@ -74,15 +87,7 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		}
 	}
 	
-	$http.get('/resources/'+$window.localStorage.getItem("username")).success(function(data) {
-		$scope.data = data;
-		console.log(data);
-		$scope.tableParams = new NgTableParams({}, {
-			dataset : data
-		});
-	}).error(function(data) {
-		$scope.error = true;
-	});
+	
 	
 	$scope.getValue = function( serial_id){
 		console.log("Sending get value for" + localization);
@@ -91,8 +96,15 @@ app.controller("devicesCtrl", function($scope, $http, $window, NgTableParams, $l
 		}).error(function(response) {
 			$scope.valueFromResource = "Error getting data.";
 		});
-		
-		
+	}
+	
+	$scope.deleteResource = function(serial_id){
+		$http.get('/delete-resource/'+$window.localStorage.getItem("username")+'/'+ serial_id+'/').success(function(response) {
+			console.log(response.status);
+			init();
+		}).error(function(response) {
+			console.log(response.status);
+		});
 	}
 	
 	$scope.postOnValue = function(serial_id){
@@ -154,6 +166,19 @@ app.controller("contactCtrl", function($scope, $http) {
 
 app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 	
+	var init = function () {
+		$http.get('/parentalPolicies/'+$window.localStorage.getItem("username")).success(function(data) {
+			$scope.data = data;
+			console.log(data);
+			$scope.tableParams = new NgTableParams({}, {
+				dataset : data
+			});
+		}).error(function(data) {
+			$scope.error = true;
+		});
+		};
+		init();
+	
 	$scope.types = ["GET", "GET/POST"];
 	$scope.numbers = ["0","1","2","3","4","5","6","7","8"];
 
@@ -190,15 +215,7 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 
 }
 	
-	$http.get('/parentalPolicies/'+$window.localStorage.getItem("username")).success(function(data) {
-		$scope.data = data;
-		console.log(data);
-		$scope.tableParams = new NgTableParams({}, {
-			dataset : data
-		});
-	}).error(function(data) {
-		$scope.error = true;
-	});
+	
 	
 });
 

@@ -6,4 +6,5 @@ public interface ResourceService {
 	
 	public boolean addResource(Resource resourceToAdd);
 	pl.bsp.model.Resource findByName(String name);
+	public boolean deleteResource(int resourceId, String ownerUsername);
 }
