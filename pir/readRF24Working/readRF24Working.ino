@@ -32,6 +32,29 @@ struct payload_t {                 // Structure of our payload
   unsigned long type;
 };
 
+int id = 0;
+
+/** Analog input pin that the PIR is attached too */
+const int inPirDigitalPIN = 4;
+const int outPirDigitalPIN = 5;
+
+/** Value read from the pir values = HIRH/LOW */
+int inPirSensorValue = 0;
+int outPirSensorValue = 0;
+
+int inPirSensorOldValue = 0;
+int outPirSensorOldValue = 0;
+/**
+    0 - nic
+    1 - wchodzi
+    2 - wychodzi
+*/
+int state = 0;
+int humanCounter =0;
+
+/** Bool for discriminate whether high value was sended */
+bool highValueWasSended = false;
+char sendedValue = '6';
 
 void setup(void)
 {
@@ -64,7 +87,90 @@ void loop(void) {
     if (payload.type == 5 && id == 0) {
       id = payload.id;
       sendAck(id);
-    } 
+    } else if (payload.type == 0 && id == payload.id) {
+      sendhumanCounterThroughRF24();
+    }
+  }
+  /** Read PIR value every loop */
+  inPirSensorValue = digitalRead(inPirDigitalPIN);
+  outPirSensorValue = digitalRead(outPirDigitalPIN);
+
+  if (inPirSensorOldValue == LOW && inPirSensorValue == HIGH && outPirSensorOldValue == LOW && outPirSensorValue == LOW) //wchodzi
+    // sendValueThroughRF24(0);
+    state = 1;
+  else if (inPirSensorOldValue == HIGH && inPirSensorValue == HIGH && outPirSensorOldValue == LOW && outPirSensorValue == LOW) //wchodzi
+    // sendValueThroughRF24(0);
+    state = 1;
+  else if (inPirSensorOldValue == LOW && inPirSensorValue == LOW && outPirSensorOldValue == LOW && outPirSensorValue == HIGH) //wychodzi
+    //  sendValueThroughRF24(1);
+    state = 2;
+  else if (inPirSensorOldValue == LOW && inPirSensorValue == LOW && outPirSensorOldValue == HIGH && outPirSensorValue == HIGH) //wychodzi
+    //  sendValueThroughRF24(1);
+    state = 2;
+  else if (inPirSensorOldValue == HIGH && outPirSensorOldValue == LOW && outPirSensorValue == HIGH && state == 1) //wszedl
+    sendValueThroughRF24(1);
+  else if (inPirSensorOldValue == LOW && inPirSensorValue == HIGH && outPirSensorOldValue == HIGH && state == 2) //wyszedl
+    sendValueThroughRF24(0);
+  else
+    state = 0;
+
+  outPirSensorOldValue = outPirSensorValue;
+  inPirSensorOldValue = inPirSensorValue;
+}
+
+void sendValueThroughRF24(unsigned int val)
+{
+ /* if (id == '0') {
+    Serial.print("NO ID! :");
+    return;
+  }*/
+  if (val == sendedValue)
+    return;
+  Serial.print("SENDING :");
+  if (val == 2)
+    Serial.println("wchodzi");
+  if (val == 3)
+    Serial.println("wychodzi");
+  if (val == 1) {
+    Serial.println("wszedl");
+    humanCounter++;
+  }
+  if (val == 0) {
+    Serial.println("wyszedl");
+    humanCounter--;
+  }
+  int result = 0;
+  if (humanCounter > 0) {
+    result = 1;
+  }
+  RF24NetworkHeader header(other_node);
+  payload_t payload = {result, id, 2};
+  bool ok = network.write(header, &payload, sizeof(payload));
+  if (ok)
+  {
+    Serial.println(" SENDED.");
+    sendedValue = val + 48;
+  }
+  else
+  {
+    Serial.println(" FAILED.");
+  }
+}
+
+void sendhumanCounterThroughRF24()
+{
+  Serial.print(" human counter: ");
+  Serial.print(humanCounter);
+  RF24NetworkHeader header(other_node);
+  payload_t payload = {humanCounter, id, 1};
+  bool ok = network.write(header, &payload, sizeof(payload));
+  if (ok)
+  {
+    Serial.println(" REPLY SENDED.");
+  }
+  else
+  {
+    Serial.println(" REPLY FAILED.");
   }
 }
 
