@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.bsp.arduino.ArduinoReader;
+import pl.bsp.arduino.ControllerBrigde;
 import pl.bsp.arduino.ObserveMotion;
 import pl.bsp.entities.Resource;
 import pl.bsp.model.User;
@@ -47,8 +48,15 @@ public class ResourceController {
 			MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<Resource> addResource(@RequestBody Resource resource) {
 		ArduinoReader.iNeedToCheckDatabase = true;
-		if (resServ.addResource(resource))
+
+
+
+
+		if (resServ.addResource(resource)) {
+			ControllerBrigde.addResource(resServ.findByName(resource.getName()),
+					userService.findByUsername(resource.getUsername()).getIpAddress());
 			return new ResponseEntity<>(resource, HttpStatus.OK);
+		}
 		else
 			return new ResponseEntity<>(resource, HttpStatus.BAD_REQUEST);
 	}

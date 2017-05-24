@@ -35,6 +35,15 @@ public class ObserveMotion implements Runnable {
 		this.userName = userName;
 	}
 
+	public void addResource(Resource resource) {
+		resources.add(resource);
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+
 	@Override
 	public void run() {
 		String received = null;

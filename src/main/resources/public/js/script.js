@@ -180,7 +180,7 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 		init();
 	
 	$scope.types = ["GET", "GET/POST"];
-	$scope.numbers = ["0","1","2","3","4","5","6","7","8"];
+	$scope.numbers = ["ONCE","DAILY","WEEKLY","MONTHLY","YEARLY","EVERY MINUTE","EVERY SECOND","EVERY MILISECOND","HOURLY"];
 
 	$scope.submitPolicy = function(){
 		

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.bsp.enums.RepeatPatern;
 import pl.bsp.model.ParentalControlPolicy;
+import pl.bsp.services.ArduinoService;
 import pl.bsp.services.ResourceService;
 import pl.bsp.services.UserService;
 
@@ -25,6 +26,7 @@ public class ParentalControlThread {
     
     @Autowired
     private UserService userService;
+    private ArduinoService arduinoService;
     private String username;
     private ResourceService resourceService;
     private PriorityBlockingQueue<Event> policyQueue;
@@ -59,18 +61,21 @@ public class ParentalControlThread {
             policyQueue.add(
                     new Event(startDate.getTime(),
                             resourceService.findByName(policy.getResourceName()).getId(),
-                            policy.getAction(), RepeatPatern.values()[policy.getRepeatPatern()])
+                            policy.getAction(), RepeatPatern.values()[policy.getRepeatPatern()],
+                            userService.findByUsername(policy.getUser().getUsername()).getIpAddress())
             );
             if(startDate != endDate) {
                 if (policy.getAction().equals("turn on")) {
                     policyQueue.add(new Event(startDate.getTime(),
                             resourceService.findByName(policy.getResourceName()).getId(),
-                            TURN_OFF, RepeatPatern.values()[policy.getRepeatPatern()])
+                            TURN_OFF, RepeatPatern.values()[policy.getRepeatPatern()],
+                            userService.findByUsername(policy.getUser().getUsername()).getIpAddress())
                     );
                 } else {
                     policyQueue.add(new Event(startDate.getTime(),
                             resourceService.findByName(policy.getResourceName()).getId(),
-                            TURN_ON,RepeatPatern.values()[policy.getRepeatPatern()])
+                            TURN_ON,RepeatPatern.values()[policy.getRepeatPatern()],
+                            userService.findByUsername(policy.getUser().getUsername()).getIpAddress())
                     );
                 }
 
@@ -92,9 +97,9 @@ public class ParentalControlThread {
                 if ((policyQueue.peek().getTime() - new Date().getTime()) < 1000) {
                 	Event event = policyQueue.poll();
                 	if(event.getAction().equals(TURN_ON)) {
-                		
+                        arduinoService.turnOnTheLight(event.getArduinoIp(), (int) event.getResourceId());
                 	} else if (event.getAction().equals(TURN_OFF)) {
-                		
+                		arduinoService.turnOffTheLight(event.getArduinoIp(), (int) event.getResourceId());
                 	}
                     /**TODO: wysyłanie odpowiedniego żądania do arduino uno
                      * resource id jest w evencie
