@@ -91,6 +91,7 @@ void loop(void) {
       sendhumanCounterThroughRF24();
     } else if (payload.type == 3 && id == payload.id) {
       humanCounter = payload.value;
+      sendAck(id);
     }
   }
   /** Read PIR value every loop */

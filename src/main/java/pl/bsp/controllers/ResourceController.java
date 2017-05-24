@@ -51,10 +51,10 @@ public class ResourceController {
 
 
 
-
+		User owner = userService.findByUsername(resource.getUsername());
 		if (resServ.addResource(resource)) {
-			ControllerBrigde.addResource(resource,
-					userService.findByUsername(resource.getUsername()).getIpAddress());
+			
+			ControllerBrigde.addResource(resource,owner.getIpAddress(),owner);
 			return new ResponseEntity<>(resource, HttpStatus.OK);
 		}
 		else

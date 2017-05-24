@@ -16,10 +16,8 @@ import pl.bsp.entities.Resource;
 import pl.bsp.model.User;
 import pl.bsp.services.ArduinoService;
 import pl.bsp.services.ArduinoServiceImpl;
-import pl.bsp.services.ResourceService;
-import pl.bsp.services.ResourceServiceImpl;
-import pl.bsp.services.UserService;
 import pl.bsp.services.UserServiceImpl;
+
 
 public class ObserveMotion {
 	ArduinoService ardServ = new ArduinoServiceImpl();
@@ -28,15 +26,11 @@ public class ObserveMotion {
 
 	List<Resource> resources = new ArrayList<>();
 
-	@Autowired
-	ResourceServiceImpl resServ;
-	@Autowired
-	UserServiceImpl userService;
 
-	public ObserveMotion(String arduinoIp, String userName) {
+	public ObserveMotion(String arduinoIp, User owner) {
 		this.arduinoIp = arduinoIp;
-		this.userName = userName;
-		User owner = userService.findByUsername(userName);
+		this.userName = owner.getUsername();
+
 		for(pl.bsp.model.Resource res : owner.getResources()) {
 			Resource newRes = new Resource();
 			newRes.setSerial_id(res.getSerialId());
