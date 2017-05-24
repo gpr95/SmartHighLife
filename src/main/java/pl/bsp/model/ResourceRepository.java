@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface ResourceRepository extends JpaRepository<Resource, Long>{
     Resource findByName(String name);
     
-    Resource findBySerialId(int serialId);
+    Resource findBySerialIdAndUser(int serialId, User user);
     
-    List<Resource> deleteBySerialId(int serialId);
+    List<Resource> deleteBySerialIdAndUser(int serialId, User user);
 }
