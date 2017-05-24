@@ -50,7 +50,7 @@ int outPirSensorOldValue = 0;
     2 - wychodzi
 */
 int state = 0;
-int humanCounter =0;
+unsigned int humanCounter =0;
 
 /** Bool for discriminate whether high value was sended */
 bool highValueWasSended = false;
@@ -137,7 +137,8 @@ void sendValueThroughRF24(unsigned int val)
   }
   if (val == 0) {
     Serial.println("wyszedl");
-    humanCounter--;
+    if(humanCounter > 0)  
+      humanCounter--;
   }
   int result = 0;
   if (humanCounter > 0) {
