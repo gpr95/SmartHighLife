@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface ParentalControlPolicyRepository extends JpaRepository<ParentalControlPolicy, Long>{
 	
-	ParentalControlPolicy findById(long id);
+	public ParentalControlPolicy findById(long id);
 	List<ParentalControlPolicy> findByUser(User user);
+	List<ParentalControlPolicy> deleteById(long id);
 }
