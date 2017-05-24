@@ -29,8 +29,8 @@ public class ResourceServiceImpl implements ResourceService{
 	@Autowired
 	UserServiceImpl userService;
 	
-	@Autowired
-	ArduinoService arduinoService;
+
+	ArduinoService arduinoService = new ArduinoServiceImpl();
 
 	@Autowired
 	ResourceRepository resourceRepo2;

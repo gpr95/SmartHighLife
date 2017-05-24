@@ -13,7 +13,7 @@ import pl.bsp.enums.RepeatPatern;
 import pl.bsp.model.ParentalControlPolicy;
 import pl.bsp.services.ArduinoService;
 import pl.bsp.services.ResourceService;
-import pl.bsp.services.UserService;
+import pl.bsp.services.UserServiceImpl;
 
 /**
  * Created by Kamil on 2017-05-22.
@@ -25,7 +25,7 @@ public class ParentalControlThread {
     
     
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
     private ArduinoService arduinoService;
     private String username;
     private ResourceService resourceService;

@@ -16,7 +16,9 @@ import pl.bsp.entities.Resource;
 import pl.bsp.model.User;
 import pl.bsp.services.ArduinoService;
 import pl.bsp.services.ArduinoServiceImpl;
+import pl.bsp.services.ResourceService;
 import pl.bsp.services.ResourceServiceImpl;
+import pl.bsp.services.UserService;
 import pl.bsp.services.UserServiceImpl;
 
 public class ObserveMotion {
