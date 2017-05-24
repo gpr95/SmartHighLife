@@ -59,9 +59,9 @@ network.update();
     if(message.id == id && message.type == 'p') 
     {
       if(message.value = '0') {
-        level == 0;
+        analogWrite(3, 0);
       } else {
-        level = 255;
+        analogWrite(3, 255);
       }
     }
     if(message.type == 'x') {
