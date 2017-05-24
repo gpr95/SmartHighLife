@@ -53,7 +53,7 @@ public class ResourceController {
 
 
 		if (resServ.addResource(resource)) {
-			ControllerBrigde.addResource(resServ.findByName(resource.getName()),
+			ControllerBrigde.addResource(resource,
 					userService.findByUsername(resource.getUsername()).getIpAddress());
 			return new ResponseEntity<>(resource, HttpStatus.OK);
 		}
