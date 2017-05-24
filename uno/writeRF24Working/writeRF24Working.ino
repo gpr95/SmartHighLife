@@ -60,8 +60,20 @@ void setup(void)
   /** Start ethernet outputs on automate DHCP IP */
   Ethernet.begin(mac);
   Udp.begin(localPort);
+
+   /** Relay output */
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+
+  /** Turn off relay (on LOW it is turned on) */
+  digitalWrite(8, HIGH); // turn OFF
+  digitalWrite(9, HIGH); // turn OFF
+
+  /** Turn off light - "click" on pilot `off` value */
+  turnOffLight();
 }
 boolean needToSendRF = false;
+boolean lightIsTurnedOn = false;
 unsigned long globalValue;
 unsigned long globalId;
 unsigned long globalType;
@@ -94,7 +106,7 @@ void loop() {
         Serial.print(payload.value);
         Serial.print(" with type ");
         Serial.println(payload.type);
-        if(payload.type == 4)
+        if (payload.type == 4)
           receivedAck = true;
       }
 
@@ -116,7 +128,7 @@ void loop() {
       Serial.print(packetBuffer[i]);
     }
     Serial.println(" ");
-
+  unsigned int longId;
     switch (packetBuffer[0]) {
       case 'X':
         initializeRemoteIp();
@@ -130,22 +142,38 @@ void loop() {
       case 'a':
         addResource(packetBuffer, packetSize);
         break;
-      //      case 'N':
-      //        turnOnLight();
-      //        writeThroughUDP('D');
-      //        break;
-      //      case 'n':
-      //        turnOnLight();
-      //        writeThroughUDP('D');
-      //        break;
-      //      case 'F':
-      //        turnOffLight();
-      //        writeThroughUDP('D');
-      //        break;
-      //      case 'f':
-      //        turnOffLight();
-      //        writeThroughUDP('D');
-      //        break;
+      case 'N':
+        longId = packetBuffer[1];
+        if(longId > 65)
+           writeThroughRF24(1,longId,3);
+        else
+          turnOnLight();
+        writeThroughUDP('D');
+        break;
+      case 'n':
+        longId = packetBuffer[1];
+        if(longId > 65)
+           writeThroughRF24(1,longId,3);
+        else
+          turnOnLight();
+        writeThroughUDP('D');
+        break;
+      case 'F':
+        longId = packetBuffer[1];
+        if(longId > 65)
+           writeThroughRF24(0,longId,3);
+        else
+          turnOnLight();
+        writeThroughUDP('D');
+        break;
+      case 'f':
+        longId = packetBuffer[1];
+        if(longId > 65)
+           writeThroughRF24(0,longId,3);
+        else
+          turnOnLight();
+        writeThroughUDP('D');
+        break;
       case 'G':
         getResource(packetBuffer, packetSize);
         break;
@@ -211,6 +239,34 @@ void writeThroughRF24(unsigned long value, unsigned long id, unsigned long type)
   globalId = id;
   globalType = type;
   needToSendRF = true;
+}
+
+
+void turnOnLight()
+{
+  if (lightIsTurnedOn)
+    return;
+
+  /** Turn on relay-1 - for 0.5s */
+  digitalWrite(8, LOW);
+  delay(500);
+  digitalWrite(8, HIGH);
+
+  lightIsTurnedOn = true;
+  Serial.println("Light ON");
+}
+
+void turnOffLight()
+{
+  if (!lightIsTurnedOn)
+    return;
+  /** Turn on relay-2 - for 0.5s */
+  digitalWrite(9, LOW);
+  delay(500);
+  digitalWrite(9, HIGH);
+
+  lightIsTurnedOn = false;
+  Serial.println("Light OFF");
 }
 
 
