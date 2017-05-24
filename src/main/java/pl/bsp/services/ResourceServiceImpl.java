@@ -74,10 +74,10 @@ public class ResourceServiceImpl implements ResourceService{
 	@Transactional
 	public boolean deleteResource(int serialId, String ownerUsername) {
 		User owner = userRepo.findByUsername(ownerUsername);
-		pl.bsp.model.Resource resourceToDelete = resourceRepo2.findBySerialId(serialId);
+		pl.bsp.model.Resource resourceToDelete = resourceRepo2.findBySerialIdAndUser(serialId, owner);
 		boolean status = owner.getResources().remove(resourceToDelete);
 		userService.update(owner);
-		List<pl.bsp.model.Resource> deletedResources = resourceRepo2.deleteBySerialId(serialId);
+		List<pl.bsp.model.Resource> deletedResources = resourceRepo2.deleteBySerialIdAndUser(serialId, owner);
 		if(status){
 			return true;
 		}else{
