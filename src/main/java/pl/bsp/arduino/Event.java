@@ -11,12 +11,14 @@ public class Event {
     long resourceId;;
     String action;
     RepeatPatern repeatPatern;
+    String arduinoIp;
 
-    public Event(long time, long resourceId, String action, RepeatPatern repeatPatern) {
+    public Event(long time, long resourceId, String action, RepeatPatern repeatPatern, String arduinoIp) {
         this.time = time;
         this.resourceId = resourceId;
         this.action = action;
         this.repeatPatern = repeatPatern;
+        this.arduinoIp = arduinoIp;
     }
 
     public long getTime() {
@@ -49,5 +51,13 @@ public class Event {
 
     public void setRepeatPatern(RepeatPatern repeatPatern) {
         this.repeatPatern = repeatPatern;
+    }
+
+    public String getArduinoIp() {
+        return arduinoIp;
+    }
+
+    public void setArduinoIp(String arduinoIp) {
+        this.arduinoIp = arduinoIp;
     }
 }
