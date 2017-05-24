@@ -1,9 +1,10 @@
 package pl.bsp.services;
 
 public interface ArduinoService {
-	public String findArduinoInNetwork();
-	public void turnOnTheLight(String arduinoIp, int resourceId);
-	public void turnOffTheLight(String arduinoIp, int resourceId);
-	public String getResourceValue(String arduinoIp, int resourceId);
-	public void addNewResource(String arduinoIp, int resourceId);
+	String findArduinoInNetwork();
+	void turnOnTheLight(String arduinoIp, int resourceId);
+	void turnOffTheLight(String arduinoIp, int resourceId);
+	String getResourceValue(String arduinoIp, int resourceId);
+	void addNewResource(String arduinoIp, int resourceId);
+	void syncHumanCounter(String arduinoIp, int resourceId);
 }
