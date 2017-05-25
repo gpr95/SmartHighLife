@@ -1,20 +1,23 @@
 package pl.bsp.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import pl.bsp.arduino.ParentalControlThread;
-import pl.bsp.entities.Resource;
-import pl.bsp.enums.RepeatPatern;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import pl.bsp.arduino.ControllerBrigde;
 import pl.bsp.model.ParentalControlPolicy;
 import pl.bsp.model.User;
 import pl.bsp.services.ParentalControlPolicyService;
+import pl.bsp.services.ResourceServiceImpl;
 import pl.bsp.services.UserServiceImpl;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Kamil on 2017-05-22.
@@ -24,6 +27,8 @@ public class ParentalControlController {
 
     @Autowired
     UserServiceImpl userService;
+    @Autowired
+    ResourceServiceImpl resServ;
 
     @Autowired
     ParentalControlPolicyService policyService;
@@ -61,13 +66,16 @@ public class ParentalControlController {
             MediaType.APPLICATION_XML_VALUE })
     public ResponseEntity<String> addResource(@RequestBody pl.bsp.entities.ParentalControlPolicy policy) {
         ParentalControlPolicy policyDb = new ParentalControlPolicy();
+        User user = userService.findByUsername(policy.getUsername());
         policyDb.setResourceName(policy.getResourceName());
-        policyDb.setUser(userService.findByUsername(policy.getUsername()));
+        policyDb.setUser(user);
         policyDb.setDescription(policy.getDescription());
         policyDb.setAction(policy.getAction());
         policyDb.setEndTime(policy.getEndTime());
         policyDb.setRepeatPatern(policy.getRepeatPatern());
         policyDb.setStartTime(policy.getStartTime());
+        pl.bsp.model.Resource res =resServ.findByNameAndUser(policy.getResourceName(), user);
+        ControllerBrigde.addPolicyToThread(policyDb,res,user);
         if(policyService.add(policyDb))
             return new ResponseEntity<>("{\"status\": \"success\"}", HttpStatus.OK);
         else

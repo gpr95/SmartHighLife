@@ -192,7 +192,7 @@ app.controller("parentalCtrl", function($scope, $http, $window, NgTableParams) {
 		};
 		init();
 	
-	$scope.types = ["GET", "GET/POST"];
+	$scope.types = ["turn off", "turn on"];
 	$scope.numbers = ["ONCE","DAILY","WEEKLY","MONTHLY","YEARLY","EVERY MINUTE","EVERY SECOND","EVERY MILISECOND","HOURLY"];
 
 	$scope.submitPolicy = function(){

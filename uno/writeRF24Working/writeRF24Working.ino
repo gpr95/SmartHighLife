@@ -241,9 +241,9 @@ void getResource(char serverMsg[], int serverMsgSize) {
   }
   else {
     if (lightIsTurnedOn)
-      writeThroughUDP('N');
+      writeThroughUDP('1');
     else
-      writeThroughUDP('F');
+      writeThroughUDP('0');
   }
 }
 

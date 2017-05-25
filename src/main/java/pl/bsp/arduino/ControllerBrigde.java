@@ -15,9 +15,9 @@ public class ControllerBrigde {
     static Map<String, ObserveMotion> observeMotionMap = new HashMap<>();
 
 
-    public static void addUser(String username) {
-        if (!parentalControlThreads.containsKey(username)) {
-            parentalControlThreads.put(username, new ParentalControlThread(username));
+    public static void addUser(User user) {
+        if (!parentalControlThreads.containsKey(user.getUsername())) {
+            parentalControlThreads.put(user.getUsername(), new ParentalControlThread(user));
         }
     }
 
@@ -31,8 +31,8 @@ public class ControllerBrigde {
         return parentalControlThreads.get(username);
     }
 
-    public static void addPolicyToThread(ParentalControlPolicy policy) {
-        parentalControlThreads.get(policy.getUser().getUsername()).addPolicy(policy);
+    public static void addPolicyToThread(ParentalControlPolicy policy, pl.bsp.model.Resource res, pl.bsp.model.User user) {
+        parentalControlThreads.get(policy.getUser().getUsername()).addPolicy(policy,res,user);
     }
 
     public static void deletePolicyFromThread(ParentalControlPolicy policy) {
