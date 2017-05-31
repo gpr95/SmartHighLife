@@ -1,73 +1,116 @@
+/*
+  Copyright (C) 2012 James Coliz, Jr. <maniacbug@ymail.com>
 
-#include <RF24.h>
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  version 2 as published by the Free Software Foundation.
+
+  Update 2014 - TMRh20
+*/
+
+/**
+   Simplest possible example of using RF24Network,
+
+   RECEIVER NODE
+   Listens for messages from the transmitter and prints them out.
+*/
+
 #include <RF24Network.h>
+#include <RF24.h>
 #include <SPI.h>
-#include <stdio.h>
 
-unsigned char level=0;
 
-/** nRF24L01(+) radio attached to SPI and pins 7,8 */
-RF24 radio24(7, 8);
-/** Network uses that radio */
-RF24Network network(radio24);
+RF24 radio(7, 8);               // nRF24L01(+) radio attached using Getting Started board
 
-/** RF24 IDs */
-const uint16_t pirNodeId = 01;
-const uint16_t serverNodeId = 00;
 
-/** RF24 send scruct */
-struct payloadRF24Msg
-{
-  char value;
-  char id;
-  //n - notyfication, r - reply, g - get, p - put
-  char type;
+RF24Network network(radio);      // Network uses that radio
+const uint16_t this_node = 00;    // Address of our node in Octal format ( 04,031, etc)
+const uint16_t other_node = 01;   // Address of the other node in Octal format
+
+int id = 0;
+
+/**
+   type: 0 - get, 1 - reply (get), 2 - notify, 3 - put, 4 - ack (put), 5 - set id
+*/
+struct payload_t {                 // Structure of our payload
+  unsigned long value;
+  unsigned long id;
+  unsigned long type;
 };
 
-/** Device id used in communication with serwer */
-char id = 0;
+int state = 1;
 
-
-
-
-void setup(){
-
-pinMode(3, OUTPUT);
- /** Initialize serial communications at 9600 bps */
-  Serial.begin(9600);
-  /** Initialize SPI pins for RF24 module */
+void setup(void)
+{
+  Serial.begin(57600);
+  Serial.println("RF24Network/examples/helloworld_rx/");
+  pinMode(3, OUTPUT);
   SPI.begin();
-  network.begin(90, pirNodeId);
-  radio24.begin();
-  /** Channel 90 communication from this node */
-
+  radio.begin();
+  network.begin(/*channel*/ 90, /*node address*/ this_node);
+  analogWrite(3, 0);
 }
 
-void loop(){
+void loop(void) {
+
+  network.update();                  // Check the network regularly
 
 
-network.update();
+  while ( network.available() ) {     // Is there anything ready for us?
 
-  if(network.available()) 
-  {
-    Serial.print("cos odebra! :");
-    RF24NetworkHeader header;
-    payloadRF24Msg message;
-    network.read(header,&message,sizeof(message));
-
-    /** If someone sended 1 turn the light on and write broadcast `x`*/
-    if(message.id == id && message.type == 'p') 
-    {
-      if(message.value = '0') {
-        analogWrite(3, 0);
-      } else {
-        analogWrite(3, 255);
+    RF24NetworkHeader header;        // If so, grab it and print it out
+    payload_t payload;
+    network.read(header, &payload, sizeof(payload));
+    Serial.print("Received packet id");
+    Serial.print(payload.id);
+    Serial.print(" value ");
+    Serial.print(payload.value);
+    Serial.print(" type ");
+    Serial.println(payload.type);
+    Serial.print(" my id ");
+    Serial.println(id);
+    if (payload.type == 5 && id == 0) {
+      id = payload.id;
+      sendAck(id);
+    } else if (payload.id == id) {
+      if (payload.type == 3) {
+        if (payload.value == 1) {//turn on
+          analogWrite(3, 0);
+          state = 1;
+        } else {
+          analogWrite(3, 255);
+          state = 0;
+        }
+        sendAck(payload.value);
+      }
+      if (payload.type == 0) {
+        sendReply(state);
       }
     }
-    if(message.type == 'x') {
-      id = message.id;
-      Serial.print("ID assigned! :");
-    }
   }
-
 }
+
+void sendAck(unsigned long value)
+{
+  Serial.print("Sending ACK...");
+  payload_t payload = { value, id, 4 };
+  RF24NetworkHeader header(/*to node*/ other_node);
+  bool ok = network.write(header, &payload, sizeof(payload));
+  if (ok)
+    Serial.println("ok.");
+  else
+    Serial.println("failed.");
+}
+
+void sendReply(unsigned long value)
+{
+  Serial.print("Sending Reply...");
+  payload_t payload = { value, id, 1 };
+  RF24NetworkHeader header(/*to node*/ other_node);
+  bool ok = network.write(header, &payload, sizeof(payload));
+  if (ok)
+    Serial.println("ok.");
+  else
+    Serial.println("failed.");
+}
+
